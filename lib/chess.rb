@@ -1,23 +1,48 @@
 
+class King
+
+end
+
+class Queen
+
+end
+
+class Bishop
+
+end
+
+class Knight
+
+end
+
+class Rook
+
+end
+
+class Pawn
+
+end
+
 class Player
-  def initialize(name)
+  def initialize(name, color)
     @name = name
-    @pawn_one = Pawn.new
-    @pawn_two = Pawn.new
-    @pawn_three = Pawn.new
-    @pawn_four = Pawn.new
-    @pawn_five = Pawn.new
-    @pawn_six = Pawn.new
-    @pawn_seven = Pawn.new
-    @pawn_eight = Pawn.new
-    @rook_one = Rook.new
-    @rook_two = Rook.new
-    @knight_one = Knight.new
-    @knight_two = Knight.new
-    @bishop_one = Bishop.new
-    @bishop_two = Bishop.new
-    @queen = Queen.new
-    @king = King.new
+    @color = color
+    @pawn_one = Pawn.new(color)
+    @pawn_two = Pawn.new(color)
+    @pawn_three = Pawn.new(color)
+    @pawn_four = Pawn.new(color)
+    @pawn_five = Pawn.new(color)
+    @pawn_six = Pawn.new(color)
+    @pawn_seven = Pawn.new(color)
+    @pawn_eight = Pawn.new(color)
+    @rook_one = Rook.new(color)
+    @rook_two = Rook.new(color)
+    @knight_one = Knight.new(color)
+    @knight_two = Knight.new(color)
+    @bishop_one = Bishop.new(color)
+    @bishop_two = Bishop.new(color)
+    @queen = Queen.new(color)
+    @king = King.new(color)
   end
 end
 
@@ -25,8 +50,8 @@ end
 class Board
 
   def initialize(player_one_name = 'Johnny', player_two_name = 'Bob')
-    @board = Array.new(8) {Array.new(8)}
-    @player_one = Player.new(player_one_name)
-    @player_two = Player.new(player_two_name)
+    @board = Array.new(8) {Array.new(8, "  ")}
+    @player_one = Player.new(player_one_name, white)
+    @player_two = Player.new(player_two_name, black)
   end
 end
