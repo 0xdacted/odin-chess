@@ -1,5 +1,6 @@
-
 class King
+  attr_reader :piece
+  attr_accessor :position
   def initialize(piece, position)
     @piece = piece
     @position = position
@@ -7,6 +8,8 @@ class King
 end
 
 class Queen
+  attr_reader :piece
+  attr_accessor :position
   def initialize(piece, position)
     @piece = piece
     @position = position
@@ -14,6 +17,8 @@ class Queen
 end
 
 class Bishop
+  attr_reader :piece
+  attr_accessor :position
   def initialize(piece, position)
     @piece = piece
     @position = position
@@ -21,6 +26,8 @@ class Bishop
 end
 
 class Knight
+  attr_reader :piece
+  attr_accessor :position
   def initialize(piece, position)
     @piece = piece
     @position = position
@@ -28,6 +35,8 @@ class Knight
 end
 
 class Rook
+  attr_reader :piece
+  attr_accessor :position
   def initialize(piece, position)
     @piece = piece
     @position = position
@@ -35,6 +44,8 @@ class Rook
 end
 
 class Pawn
+  attr_reader :piece
+  attr_accessor :position
   def initialize(piece, position)
     @piece = piece
     @position = position
@@ -42,6 +53,7 @@ class Pawn
 end
 
 class Player
+  attr_reader :pawn_one, :pawn_two, :pawn_three, :pawn_four, :pawn_five, :pawn_six, :pawn_seven, :pawn_eight, :rook_one, :rook_two, :knight_one, :knight_two, :bishop_one, :bishop_two, :queen, :king
   def initialize(name, color)
     @name = name
     @color = color
@@ -93,12 +105,23 @@ end
 
 
 class Board
+  attr_accessor :board
+  attr_reader :player_one, :player_two
   def initialize(player_one_name = 'Johnny', player_one_color = 'white', player_two_name = 'Bob', player_two_color = 'black')
     @board = Array.new(8) {Array.new(8)}
     @player_one = Player.new(player_one_name, player_one_color)
     @player_two = Player.new(player_two_name, player_two_color)
-
+    place_pieces
   end
 
-  def display
+  # def place_pieces
+  #   place_player_one_pieces
+  #   place_player_two_pieces
+  # end
+
+  # def place_player_one_pieces
+  #  p @player_one.pawn_one.position
+  # end
 end
+
+
