@@ -100,6 +100,29 @@ class Rook < Piece
     end
   end
 
+  def possible_moves(board, x, y)
+    move_right(board, x, y)
+    move_left(board, x, y)
+    move_forward(board, x, y)
+    move_backward(board, x, y)
+  end
+
+  def choose_move([x, y])
+    if @moveset.bsearch {|i| i == [x, y]} == true
+      puts "You have moved #{self.piece} from #{[@x, @y]}to #{[x, y]}"
+      @moved = true
+      @x = x
+      @y = y
+      clear_moveset
+    else
+      return false
+    end
+  end
+
+  def clear_moveset
+    @moveset = []
+  end
+
 end
 
 class Pawn < Piece
@@ -173,6 +196,7 @@ class Pawn < Piece
      @moved = true
      @x = x
      @y = y
+     clear_moveset
     else
       return false
     end
