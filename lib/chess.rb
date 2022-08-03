@@ -33,7 +33,87 @@ end
 class Knight < Piece
   def initialize(piece, x, y, color)
     super
-    @moveset 
+    @moveset = []
+  end
+
+  def up_right(board, x, y)
+    @color == 'white' ? return unless x <= 5 && y <= 6 : return unless x >= 2 && y >= 1
+    @color == 'white' ? x + 2 && y + 1 : x - 2 && y - 1
+    if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
+      @moveset << [x, y]
+    else
+      return
+    end
+  end
+
+  def up_left(board, x, y)
+    @color == 'white' ? return unless x <= 5 && y >= 1 : return unless x >= 2 && y <= 6
+    @color == 'white' ? x + 2 && y - 1 : x - 2 && y + 1
+    if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
+      @moveset << [x, y]
+    else
+      return
+    end
+  end
+
+  def right_up(board, x, y)
+    @color == 'white' ? return unless x <= 6 && y <= 5 : return unless x >= 1 && y >= 2
+    @color == 'white' ? x + 1 && y + 2 : x - 1 && y - 2
+    if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
+      @moveset << [x, y]
+    else
+      return
+    end
+  end
+
+  def left_up(board, x, y)
+    @color == 'white' ? return unless x <= 6 && y >= 2 : x >= 1 && y <= 5
+    @color == 'white' ? x + 1 && y - 2 : x - 1 && y + 2
+    if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
+      @moveset << [x, y]
+    else
+      return
+    end
+  end
+
+  def down_right(board, x, y)
+    @color == 'white' ? return unless x >= 2 && y <= 6 : return unless x <= 5 && y >= 1
+    @color == 'white' ? x - 2 && y + 1 : x + 2 && y - 1
+    if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
+      @moveset << [x, y]
+    else
+      return
+    end
+  end
+
+  def down_left(board, x, y)
+    @color == 'white' ? return unless x >= 2 && y >= 1 : return unless x <= 5 && y <= 6
+    @color == 'white' ? x - 2 && y - 1 : x + 2 && y + 1
+    if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
+      @moveset << [x, y]
+    else
+      return
+    end
+  end
+
+  def right_down(board, x, y)
+    @color == 'white' ? return unless x >= 1 && y <= 5 : return unless x <= 6 && y >= 2
+    @color == 'white' ? x - 1 && y + 2 : x + 1 && y - 2
+    if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
+      @moveset << [x, y]
+    else
+      return
+    end
+  end
+
+  def left_down(board, x, y)
+    @color == 'white' ? return unless x >= 1 && y >= 2 : return unless x <= 6 && y <= 5
+    @color == 'white' ? x - 1 && y - 2 : x + 1 && y + 2
+    if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
+      @moveset << [x, y]
+    else
+      return
+    end
   end
 end
 
