@@ -10,37 +10,43 @@ class Piece
 end
 
 class King < Piece
-  def initialize
+  def initialize(piece, x, y, color)
+    super
     @moveset 
   end
 end
 
 class Queen < Piece
-  def initialize
+  def initialize(piece, x, y, color)
+    super
     @moveset 
   end
 end
 
 class Bishop < Piece
-  def initialize
+  def initialize(piece, x, y, color)
+    super
     @moveset 
   end
 end
 
 class Knight < Piece
-  def initialize
+  def initialize(piece, x, y, color)
+    super
     @moveset 
   end
 end
 
 class Rook < Piece
-  def initialize
+  def initialize(piece, x, y, color)
+    super
     @moveset 
   end
 end
 
 class Pawn < Piece
-  def initialize
+  def initialize(piece, x, y, color)
+    super
     @moveset 
   end
 end
