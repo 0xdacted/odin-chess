@@ -26,7 +26,35 @@ end
 class Bishop < Piece
   def initialize(piece, x, y, color)
     super
-    @moveset 
+    @moveset = []
+  end
+
+  def right_diagonal(board, x, y)
+    return unless x >= 0 && x <= 7 && y >= 0 && y <= 7
+    @color == 'white' ? x + 1 && y + 1 : x - 1 && y - 1
+    if board[x][y].nil?
+      @moveset << [x, y]
+      right_diagonal(board, x, y)
+    elsif !board[x][y].nil? && board[x][y].color != @color
+      @moveset << [x, y]
+      return
+    else
+      return
+    end
+  end
+
+  def left_diagonal(board, x, y)
+    return unless x >= 0 && x <= 7 && y >= 0 && y <= 7
+    @color == 'white' ? x + 1 && y - 1 : x - 1 && y + 1
+    if board[x][y].nil?
+      @moveset << [x, y]
+      right_diagonal(board, x, y)
+    elsif !board[x][y].nil? && board[x][y].color != @color
+      @moveset << [x, y]
+      return
+    else
+      return
+    end
   end
 end
 
