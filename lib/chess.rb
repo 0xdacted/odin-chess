@@ -115,6 +115,33 @@ class Knight < Piece
       return
     end
   end
+
+  def possible_moves(board, x, y)
+    up_right(board, x, y)
+    up_left(board, x, y)
+    right_up(board, x, y)
+    left_up(board, x, y)
+    down_right(board, x, y)
+    down_left(board, x, y)
+    right_down(board, x, y)
+    left_down(board, x, y)
+  end
+
+  def choose_move([x, y])
+    if @moveset.bsearch {|i| i == [x, y]} == true
+      puts "You have moved #{self.piece} from #{[@x, @y]}to #{[x, y]}"
+      @moved = true
+      @x = x
+      @y = y
+      clear_moveset
+    else
+      return false
+    end
+  end
+
+  def clear_moveset
+    @moveset = []
+  end
 end
 
 class Rook < Piece
