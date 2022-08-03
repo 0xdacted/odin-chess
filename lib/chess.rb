@@ -1,51 +1,32 @@
 
 class King
   def initialize(color)
-    if color == 'white'
-      @self = "♔"
-    elsif color == 'black'
-      @self = "♚"
-    end
+    color == 'white' ? @self = "♔" : @self = "♚"
   end
 end
 
 class Queen
   def initialize(color)
-    if color == 'white'
-      @self = "♕"
-    elsif color == 'black'
-      @self = "♛"
-    end
+    color == 'white' ? @self = "♕" : @self = "♛"
+
   end
 end
 
 class Bishop
   def initialize(color)
-    if color == 'white'
-      @self = "♗"
-    elsif color == 'black'
-      @self = "♝"
-    end
+    color == 'white' ? @self = "♗" : @self = "♝"
   end
 end
 
 class Knight
   def initialize(color)
-    if color == 'white'
-      @self = "♘"
-    elsif color == 'black'
-      @self = "♞"
-    end
+    color == 'white' ? @self = "♘" : @self = "♞"
   end
 end
 
 class Rook
   def initialize(color)
-    if color == 'white'
-      @self = "♖"
-    elsif color == 'black'
-      @self = "♜"
-    end
+    color == 'white' ? @self = "♖" : @self = "♜"
   end
 end
 
@@ -84,10 +65,12 @@ end
 
 
 class Board
-
   def initialize(player_one_name = 'Johnny', player_two_name = 'Bob')
-    @board = Array.new(8) {Array.new(8, "  ")}
+    @board = Array.new(8) {Array.new(8)}
     @player_one = Player.new(player_one_name, 'white')
     @player_two = Player.new(player_two_name, 'black')
+
   end
+
+  def display
 end
