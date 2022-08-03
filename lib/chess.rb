@@ -50,7 +50,7 @@ class Rook < Piece
     if board[x][y].nil?
       @moveset << [x, y]
       move_right(board, x, y)
-    elsif !board.nil? && board[x][y].color != @color
+    elsif !board[x][y].nil? && board[x][y].color != @color
       @moveset << [x, y]
       return
     else
@@ -64,7 +64,7 @@ class Rook < Piece
     if board[x][y].nil?
       @moveset << [x, y]
       move_left(board, x, y)
-    elsif !board.nil? && board[x][y].color != @color
+    elsif !board[x][y].nil? && board[x][y].color != @color
       @moveset << [x, y]
       return
     else
@@ -78,7 +78,7 @@ class Rook < Piece
     if board[x][y].nil?
       @moveset << [x, y]
       move_forward(board, x, y)
-    elsif !board.nil? && board[x][y].color != @color
+    elsif !board[x][y].nil? && board[x][y].color != @color
       @moveset << [x, y]
       return
     else
@@ -92,7 +92,7 @@ class Rook < Piece
     if board[x][y].nil?
       @moveset << [x, y]
       move_backward(board, x, y)
-    elsif !board.nil? && board[x][y].color != @color
+    elsif !board[x][y].nil? && board[x][y].color != @color
       @moveset << [x, y]
       return
     else
