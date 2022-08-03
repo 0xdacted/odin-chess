@@ -45,9 +45,9 @@ class Player
   def initialize(name, color)
     @name = name
     @color = color
-    if color == 'white'
+    if color.downcase == 'white'
       initialize_white_pieces
-    elsif color == 'black'
+    elsif color.downcase == 'black'
       initialize_black_pieces
     end
   end
@@ -93,10 +93,10 @@ end
 
 
 class Board
-  def initialize(player_one_name = 'Johnny', player_two_name = 'Bob')
+  def initialize(player_one_name = 'Johnny', player_one_color = 'white', player_two_name = 'Bob', player_two_color = 'black')
     @board = Array.new(8) {Array.new(8)}
-    @player_one = Player.new(player_one_name, 'white')
-    @player_two = Player.new(player_two_name, 'black')
+    @player_one = Player.new(player_one_name, player_one_color)
+    @player_two = Player.new(player_two_name, player_two_color)
 
   end
 
