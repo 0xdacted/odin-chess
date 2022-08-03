@@ -48,13 +48,33 @@ class Bishop < Piece
     @color == 'white' ? x + 1 && y - 1 : x - 1 && y + 1
     if board[x][y].nil?
       @moveset << [x, y]
-      right_diagonal(board, x, y)
+      left_diagonal(board, x, y)
     elsif !board[x][y].nil? && board[x][y].color != @color
       @moveset << [x, y]
       return
     else
       return
     end
+  end
+
+  def possible_moves(board, x, y)
+    right_diagonal(board, x, y)
+    left_diagonal(board, x, y)
+  end
+
+  def choose_move([x, y])
+    if @moveset.bsearch {|i| i == [x, y]} == true
+      puts "You have moved #{self.piece} from #{[@x, @y]}to #{[x, y]}"
+      @x = x
+      @y = y
+      clear_moveset
+    else
+      return false
+    end
+  end
+
+  def clear_moveset
+    @moveset = []
   end
 end
 
