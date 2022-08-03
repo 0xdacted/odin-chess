@@ -40,8 +40,66 @@ end
 class Rook < Piece
   def initialize(piece, x, y, color)
     super
-    @moveset 
+    @moveset = []
+    @moved = false
   end
+
+  def move_right(board, x, y)
+    @color == 'white' ? return unless y <= 7 : return unless y >= 0
+    @color == 'white' ? y + 1 : y - 1
+    if board[x][y].nil?
+      @moveset << [x, y]
+      move_right(board, x, y)
+    elsif !board.nil? && board[x][y].color != @color
+      @moveset << [x, y]
+      return
+    else
+      return
+    end
+  end
+
+  def move_left(board, x, y)
+    @color == 'white' ? return unless y >= 0 : return unless y <= 7
+    @color == 'white' ? y - 1 : y + 1
+    if board[x][y].nil?
+      @moveset << [x, y]
+      move_left(board, x, y)
+    elsif !board.nil? && board[x][y].color != @color
+      @moveset << [x, y]
+      return
+    else
+      return
+    end
+  end
+
+  def move_forward(board, x, y)
+    @color == 'white' ? return unless x <= 7 : return unless x >= 0
+    @color == 'white' ? x + 1 : x - 1
+    if board[x][y].nil?
+      @moveset << [x, y]
+      move_forward(board, x, y)
+    elsif !board.nil? && board[x][y].color != @color
+      @moveset << [x, y]
+      return
+    else
+      return
+    end
+  end
+
+  def move_backward(board, x, y)
+    @color == 'white' ? return unless x >= 0 : return unless x <= 7
+    @color == 'white' ? x - 1 : x + 1
+    if board[x][y].nil?
+      @moveset << [x, y]
+      move_backward(board, x, y)
+    elsif !board.nil? && board[x][y].color != @color
+      @moveset << [x, y]
+      return
+    else
+      return
+    end
+  end
+
 end
 
 class Pawn < Piece
@@ -54,7 +112,7 @@ class Pawn < Piece
 
   def single_move(board, x, y)
     @color == 'white' ? x + 1 : x - 1
-    return unless board[x][y].nil?
+    return unless board[x][y].nil? 
     @moveset << [x, y]
   end
 
@@ -70,14 +128,12 @@ class Pawn < Piece
   def capture_right(board, x, y)
     @color == 'white' ? x + 1 && y + 1 : x - 1 && y - 1
     return unless !board[x][y].nil? && board[x][y].color != @color
-    @captures << [x, y]
     @moveset << [x, y]
   end
 
   def capture_left(board, x, y)
     @color == 'white' ? x + 1 && y -1 : x - 1 && y + 1
     return unless !board[x][y].nil? && board[x][y].color != @color
-    @captures << [x, y]
     @moveset << [x, y]
   end
 
@@ -107,7 +163,6 @@ class Pawn < Piece
   def choose_move([x, y])
     if @moveset.bsearch {|i| i == [x, y]} == true
       puts "You have moved #{self.piece} from #{[@x, @y]}to #{[x, y]}"
-      @moved = true
      if @color == 'white' && @x + 2 == x
       @double_moved = true
      elsif @color == 'black' && @x - 2 == x
@@ -115,6 +170,7 @@ class Pawn < Piece
      else
       @double_moved = false
      end
+     @moved = true
      @x = x
      @y = y
     else
@@ -186,13 +242,12 @@ class Board
     @board = board
     @player_one = Player.new(player_one_name, player_one_color)
     @player_two = Player.new(player_two_name, player_two_color)
-    place_pieces
-    p @board
+    set_board
   end
 
-  def place_pieces
-    place_player_one_pieces
-    place_player_two_pieces
+  def set_board
+    set_player_one_pieces
+    set_player_two_pieces
   end
 
   def transmit_board
@@ -200,7 +255,7 @@ class Board
     @player_two.observe_board(board = @board)
   end
 
-  def place_player_one_pieces
+  def set_player_one_pieces
    @board[@player_one.pawn_one.x][@player_one.pawn_one.y] = @player_one.pawn_one
    @board[@player_one.pawn_two.x][@player_one.pawn_two.y] = @player_one.pawn_two
    @board[@player_one.pawn_three.x][@player_one.pawn_three.y] = @player_one.pawn_three
@@ -219,7 +274,7 @@ class Board
    @board[@player_one.king.x][@player_one.king.y] = @player_one.king
   end
 
-  def place_player_two_pieces
+  def set_player_two_pieces
     @board[@player_two.pawn_one.x][@player_two.pawn_one.y] = @player_two.pawn_one
     @board[@player_two.pawn_two.x][@player_two.pawn_two.y] = @player_two.pawn_two
     @board[@player_two.pawn_three.x][@player_two.pawn_three.y] = @player_two.pawn_three
