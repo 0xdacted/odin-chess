@@ -6,6 +6,7 @@ class Piece
     @piece = piece
     @x = x
     @y = y
+    @board = board
   end
 end
 
@@ -47,7 +48,19 @@ end
 class Pawn < Piece
   def initialize(piece, x, y, color)
     super
-    @moveset 
+    @moveset = []
+    @moved = false 
+  end
+
+  def single_move(board, x, y)
+    color == 'white' ? x + 1 : x - 1
+    @moveset << [x][y]
+  end
+
+  def double_move(board, x, y)
+    return unless @moved == false
+    color == 'white' ? x + 2 : x - 2
+    @moveset << [x][y]
   end
 end
 
@@ -56,11 +69,7 @@ class Player
   def initialize(name, color)
     @name = name
     @color = color.downcase
-    if color == 'white'
-      initialize_white_pieces
-    elsif color == 'black'
-      initialize_black_pieces
-    end
+    @color == 'white' ? initialize_white_pieces : initialize_black_pieces
   end
 
   def initialize_white_pieces
@@ -100,23 +109,31 @@ class Player
     @queen = Queen.new("♛", 7, 3, 'black')
     @king = King.new("♛", 7, 4, 'black')
   end
+
+  def observe_board(board)
+    @board = board
+  end
 end
 
 
 class Board
   attr_accessor :board
   attr_reader :player_one, :player_two
-  def initialize(player_one_name = 'Johnny', player_one_color = 'white', player_two_name = 'Bob', player_two_color = 'black')
+  def initialize(player_one_name, player_one_color, player_two_name, player_two_color)
     @board = Array.new(8) {Array.new(8)}
     @player_one = Player.new(player_one_name, player_one_color)
     @player_two = Player.new(player_two_name, player_two_color)
     place_pieces
-    p @board
   end
 
   def place_pieces
     place_player_one_pieces
     place_player_two_pieces
+  end
+
+  def transmit_board
+    @player_one.observe_board(board = @board)
+    @player_two.observe_board(board = @board)
   end
 
   def place_player_one_pieces
@@ -168,6 +185,8 @@ class Chess
   @game = Board.new(player_one, 'white', player_two, 'black')
   end
 end
+
+Chess.new
 
 
 
