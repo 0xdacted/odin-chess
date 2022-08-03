@@ -1,42 +1,43 @@
 
 class King
-  def initialize(color)
-    color == 'white' ? @self = "♔" : @self = "♚"
+  def initialize(piece, position)
+    @piece = piece
+    @position = position
   end
 end
 
 class Queen
-  def initialize(color)
-    color == 'white' ? @self = "♕" : @self = "♛"
-
+  def initialize(piece, position)
+    @piece = piece
+    @position = position
   end
 end
 
 class Bishop
-  def initialize(color)
-    color == 'white' ? @self = "♗" : @self = "♝"
+  def initialize(piece, position)
+    @piece = piece
+    @position = position
   end
 end
 
 class Knight
-  def initialize(color)
-    color == 'white' ? @self = "♘" : @self = "♞"
+  def initialize(piece, position)
+    @piece = piece
+    @position = position
   end
 end
 
 class Rook
-  def initialize(color)
-    color == 'white' ? @self = "♖" : @self = "♜"
+  def initialize(piece, position)
+    @piece = piece
+    @position = position
   end
 end
 
 class Pawn
-  def initialize(color)
-    if color == 'white'
-      @self = "♙"
-    elsif color == 'black'
-      @self = "♟"
-    end
+  def initialize(piece, position)
+    @piece = piece
+    @position = position
   end
 end
 
@@ -44,22 +45,49 @@ class Player
   def initialize(name, color)
     @name = name
     @color = color
-    @pawn_one = Pawn.new(color)
-    @pawn_two = Pawn.new(color)
-    @pawn_three = Pawn.new(color)
-    @pawn_four = Pawn.new(color)
-    @pawn_five = Pawn.new(color)
-    @pawn_six = Pawn.new(color)
-    @pawn_seven = Pawn.new(color)
-    @pawn_eight = Pawn.new(color)
-    @rook_one = Rook.new(color)
-    @rook_two = Rook.new(color)
-    @knight_one = Knight.new(color)
-    @knight_two = Knight.new(color)
-    @bishop_one = Bishop.new(color)
-    @bishop_two = Bishop.new(color)
-    @queen = Queen.new(color)
-    @king = King.new(color)
+    if color == 'white'
+      initialize_white_pieces
+    elsif color == 'black'
+      initialize_black_pieces
+    end
+  end
+
+  def initialize_white_pieces
+    @pawn_one = Pawn.new('♙', [1, 0])
+    @pawn_two = Pawn.new('♙', [1, 1])
+    @pawn_three = Pawn.new('♙', [1, 2])
+    @pawn_four = Pawn.new('♙', [1, 3])
+    @pawn_five = Pawn.new('♙', [1, 4])
+    @pawn_six = Pawn.new('♙', [1, 5])
+    @pawn_seven = Pawn.new('♙', [1, 6])
+    @pawn_eight = Pawn.new('♙', [1, 7])
+    @rook_one = Rook.new("♖", [0, 0])
+    @rook_two = Rook.new("♖", [0, 7])
+    @knight_one = Knight.new("♘", [0, 1])
+    @knight_two = Knight.new("♘", [0, 6])
+    @bishop_one = Bishop.new("♗", [0, 2])
+    @bishop_two = Bishop.new("♗", [0, 5])
+    @queen = Queen.new("♕", [0, 3])
+    @king = King.new("♔", [0, 4])
+  end
+
+  def initialize_black_pieces
+    @pawn_one = Pawn.new('♟', [6, 0])
+    @pawn_two = Pawn.new('♟', [6, 1])
+    @pawn_three = Pawn.new('♟', [6, 2])
+    @pawn_four = Pawn.new('♟', [6, 3])
+    @pawn_five = Pawn.new('♟', [6, 4])
+    @pawn_six = Pawn.new('♟', [6, 5])
+    @pawn_seven = Pawn.new('♟', [6, 6])
+    @pawn_eight = Pawn.new('♟', [6, 7])
+    @rook_one = Rook.new("♜", [7, 0])
+    @rook_two = Rook.new("♜", [7, 7])
+    @knight_one = Knight.new("♞", [7, 1])
+    @knight_two = Knight.new("♞", [7, 6])
+    @bishop_one = Bishop.new("♝", [7, 2])
+    @bishop_two = Bishop.new("♝", [7, 5])
+    @queen = Queen.new("♛", [7, 3])
+    @king = King.new("♛", [7, 4])
   end
 end
 
