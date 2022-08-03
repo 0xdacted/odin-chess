@@ -6,7 +6,6 @@ class Piece
     @piece = piece
     @x = x
     @y = y
-    @board = board
   end
 end
 
@@ -50,17 +49,81 @@ class Pawn < Piece
     super
     @moveset = []
     @moved = false 
+    @double_moved = false
   end
 
   def single_move(board, x, y)
-    color == 'white' ? x + 1 : x - 1
-    @moveset << [x][y]
+    @color == 'white' ? x + 1 : x - 1
+    return unless board[x][y].nil?
+    @moveset << [x, y]
   end
 
   def double_move(board, x, y)
-    return unless @moved == false
-    color == 'white' ? x + 2 : x - 2
-    @moveset << [x][y]
+    return unless @moved == false 
+    @color == 'white' ? x + 1 : x - 1
+    return unless board[x][y].nil?
+    @color == 'white' ? x + 1 : x - 1
+    return unless board[x][y].nil?
+    @moveset << [x, y]
+  end
+
+  def capture_right(board, x, y)
+    @color == 'white' ? x + 1 && y + 1 : x - 1 && y - 1
+    return unless !board[x][y].nil? && board[x][y].color != @color
+    @captures << [x, y]
+    @moveset << [x, y]
+  end
+
+  def capture_left(board, x, y)
+    @color == 'white' ? x + 1 && y -1 : x - 1 && y + 1
+    return unless !board[x][y].nil? && board[x][y].color != @color
+    @captures << [x, y]
+    @moveset << [x, y]
+  end
+
+  def en_passant_right(board, x, y)
+    @color == 'white' ? y + 1 : y - 1
+    return unless board[x][y].class == Pawn && board[x][y].color != @color && board[x][y].double_moved == true
+    @color == 'white' ? x + 1 : x - 1
+    @moveset << [x, y]
+  end
+
+  def en_passant_left(board, x, y)
+    @color == 'white' ? y - 1 : y + 1
+    return unless board[x][y].class == Pawn && board[x][y].color != @color && board[x][y].double_moved == true
+    @color == 'white' ? x - 1 : x + 1
+    @moveset << [x, y]
+  end
+
+  def possible_moves(board, x, y)
+    single_move(board, x, y)
+    double_move(board, x, y)
+    capture_right(board, x, y)
+    capture_left(board, x, y)
+    en_passant_right(board, x, y)
+    en_passant_left(board, x, y)
+  end
+
+  def choose_move([x, y])
+    if @moveset.bsearch {|i| i == [x, y]} == true
+      puts "You have moved #{self.piece} from #{[@x, @y]}to #{[x, y]}"
+      @moved = true
+     if @color == 'white' && @x + 2 == x
+      @double_moved = true
+     elsif @color == 'black' && @x - 2 == x
+      @double_moved = true
+     else
+      @double_moved = false
+     end
+     @x = x
+     @y = y
+    else
+      return false
+    end
+  end
+  
+  def clear_moveset
+    @moveset = []
   end
 end
 
@@ -119,11 +182,12 @@ end
 class Board
   attr_accessor :board
   attr_reader :player_one, :player_two
-  def initialize(player_one_name, player_one_color, player_two_name, player_two_color)
-    @board = Array.new(8) {Array.new(8)}
+  def initialize(board = Array.new(8) {Array.new(8)}, player_one_name, player_one_color, player_two_name, player_two_color)
+    @board = board
     @player_one = Player.new(player_one_name, player_one_color)
     @player_two = Player.new(player_two_name, player_two_color)
     place_pieces
+    p @board
   end
 
   def place_pieces
@@ -137,41 +201,41 @@ class Board
   end
 
   def place_player_one_pieces
-   @board[@player_one.pawn_one.x][@player_one.pawn_one.y] = @player_one.pawn_one.piece
-   @board[@player_one.pawn_two.x][@player_one.pawn_two.y] = @player_one.pawn_two.piece
-   @board[@player_one.pawn_three.x][@player_one.pawn_three.y] = @player_one.pawn_three.piece
-   @board[@player_one.pawn_four.x][@player_one.pawn_four.y] = @player_one.pawn_four.piece
-   @board[@player_one.pawn_five.x][@player_one.pawn_five.y] = @player_one.pawn_five.piece
-   @board[@player_one.pawn_six.x][@player_one.pawn_six.y] = @player_one.pawn_six.piece
-   @board[@player_one.pawn_seven.x][@player_one.pawn_seven.y] = @player_one.pawn_seven.piece
-   @board[@player_one.pawn_eight.x][@player_one.pawn_eight.y] = @player_one.pawn_eight.piece
-   @board[@player_one.rook_one.x][@player_one.rook_one.y] = @player_one.rook_one.piece
-   @board[@player_one.rook_two.x][@player_one.rook_two.y] = @player_one.rook_two.piece
-   @board[@player_one.knight_one.x][@player_one.knight_one.y] = @player_one.knight_one.piece
-   @board[@player_one.knight_two.x][@player_one.knight_two.y] = @player_one.knight_two.piece
-   @board[@player_one.bishop_one.x][@player_one.bishop_one.y] = @player_one.bishop_one.piece
-   @board[@player_one.bishop_two.x][@player_one.bishop_two.y] = @player_one.bishop_two.piece
-   @board[@player_one.queen.x][@player_one.queen.y] = @player_one.queen.piece
-   @board[@player_one.king.x][@player_one.king.y] = @player_one.king.piece
+   @board[@player_one.pawn_one.x][@player_one.pawn_one.y] = @player_one.pawn_one
+   @board[@player_one.pawn_two.x][@player_one.pawn_two.y] = @player_one.pawn_two
+   @board[@player_one.pawn_three.x][@player_one.pawn_three.y] = @player_one.pawn_three
+   @board[@player_one.pawn_four.x][@player_one.pawn_four.y] = @player_one.pawn_four
+   @board[@player_one.pawn_five.x][@player_one.pawn_five.y] = @player_one.pawn_five
+   @board[@player_one.pawn_six.x][@player_one.pawn_six.y] = @player_one.pawn_six
+   @board[@player_one.pawn_seven.x][@player_one.pawn_seven.y] = @player_one.pawn_seven
+   @board[@player_one.pawn_eight.x][@player_one.pawn_eight.y] = @player_one.pawn_eight
+   @board[@player_one.rook_one.x][@player_one.rook_one.y] = @player_one.rook_one
+   @board[@player_one.rook_two.x][@player_one.rook_two.y] = @player_one.rook_two
+   @board[@player_one.knight_one.x][@player_one.knight_one.y] = @player_one.knight_one
+   @board[@player_one.knight_two.x][@player_one.knight_two.y] = @player_one.knight_two
+   @board[@player_one.bishop_one.x][@player_one.bishop_one.y] = @player_one.bishop_one
+   @board[@player_one.bishop_two.x][@player_one.bishop_two.y] = @player_one.bishop_two
+   @board[@player_one.queen.x][@player_one.queen.y] = @player_one.queen
+   @board[@player_one.king.x][@player_one.king.y] = @player_one.king
   end
 
   def place_player_two_pieces
-    @board[@player_two.pawn_one.x][@player_two.pawn_one.y] = @player_two.pawn_one.piece
-    @board[@player_two.pawn_two.x][@player_two.pawn_two.y] = @player_two.pawn_two.piece
-    @board[@player_two.pawn_three.x][@player_two.pawn_three.y] = @player_two.pawn_three.piece
-    @board[@player_two.pawn_four.x][@player_two.pawn_four.y] = @player_two.pawn_four.piece
-    @board[@player_two.pawn_five.x][@player_two.pawn_five.y] = @player_two.pawn_five.piece
-    @board[@player_two.pawn_six.x][@player_two.pawn_six.y] = @player_two.pawn_six.piece
-    @board[@player_two.pawn_seven.x][@player_two.pawn_seven.y] = @player_two.pawn_seven.piece
-    @board[@player_two.pawn_eight.x][@player_two.pawn_eight.y] = @player_two.pawn_eight.piece
-    @board[@player_two.rook_one.x][@player_two.rook_one.y] = @player_two.rook_one.piece
-    @board[@player_two.rook_two.x][@player_two.rook_two.y] = @player_two.rook_two.piece
-    @board[@player_two.knight_one.x][@player_two.knight_one.y] = @player_two.knight_one.piece
-    @board[@player_two.knight_two.x][@player_two.knight_two.y] = @player_two.knight_two.piece
-    @board[@player_two.bishop_one.x][@player_two.bishop_one.y] = @player_two.bishop_one.piece
-    @board[@player_two.bishop_two.x][@player_two.bishop_two.y] = @player_two.bishop_two.piece
-    @board[@player_two.queen.x][@player_two.queen.y] = @player_two.queen.piece
-    @board[@player_two.king.x][@player_two.king.y] = @player_two.king.piece
+    @board[@player_two.pawn_one.x][@player_two.pawn_one.y] = @player_two.pawn_one
+    @board[@player_two.pawn_two.x][@player_two.pawn_two.y] = @player_two.pawn_two
+    @board[@player_two.pawn_three.x][@player_two.pawn_three.y] = @player_two.pawn_three
+    @board[@player_two.pawn_four.x][@player_two.pawn_four.y] = @player_two.pawn_four
+    @board[@player_two.pawn_five.x][@player_two.pawn_five.y] = @player_two.pawn_five
+    @board[@player_two.pawn_six.x][@player_two.pawn_six.y] = @player_two.pawn_six
+    @board[@player_two.pawn_seven.x][@player_two.pawn_seven.y] = @player_two.pawn_seven
+    @board[@player_two.pawn_eight.x][@player_two.pawn_eight.y] = @player_two.pawn_eight
+    @board[@player_two.rook_one.x][@player_two.rook_one.y] = @player_two.rook_one
+    @board[@player_two.rook_two.x][@player_two.rook_two.y] = @player_two.rook_two
+    @board[@player_two.knight_one.x][@player_two.knight_one.y] = @player_two.knight_one
+    @board[@player_two.knight_two.x][@player_two.knight_two.y] = @player_two.knight_two
+    @board[@player_two.bishop_one.x][@player_two.bishop_one.y] = @player_two.bishop_one
+    @board[@player_two.bishop_two.x][@player_two.bishop_two.y] = @player_two.bishop_two
+    @board[@player_two.queen.x][@player_two.queen.y] = @player_two.queen
+    @board[@player_two.king.x][@player_two.king.y] = @player_two.king
   end
 end
 
