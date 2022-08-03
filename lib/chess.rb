@@ -158,7 +158,16 @@ class Board
   end
 end
 
-board = Board.new
+class Chess
+  def initialize
+  puts "Please input player one's name and press enter, this player will play as white"
+  player_one = gets.chomp
+  puts "Please input player two's name and press enter, this player will play as black"
+  player_two = gets.chomp
+  puts "Thanks for playing #{player_one} and #{player_two}, have fun!"
+  @game = Board.new(player_one, 'white', player_two, 'black')
+  end
+end
 
 
 
