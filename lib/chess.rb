@@ -21,6 +21,12 @@ class Queen < Piece
     super
     @moveset 
   end
+
+  # def forward(board, x, y)
+  #   @color == 'white' ? x + 1 : x - 1
+  #   return unless x >= 0 && x <= 7 
+  
+  end
 end
 
 class Bishop < Piece
@@ -30,8 +36,8 @@ class Bishop < Piece
   end
 
   def right_diagonal(board, x, y)
-    return unless x >= 0 && x <= 7 && y >= 0 && y <= 7
     @color == 'white' ? x + 1 && y + 1 : x - 1 && y - 1
+    return unless x >= 0 && x <= 7 && y >= 0 && y <= 7
     if board[x][y].nil?
       @moveset << [x, y]
       right_diagonal(board, x, y)
@@ -44,8 +50,8 @@ class Bishop < Piece
   end
 
   def left_diagonal(board, x, y)
-    return unless x >= 0 && x <= 7 && y >= 0 && y <= 7
     @color == 'white' ? x + 1 && y - 1 : x - 1 && y + 1
+    return unless x >= 0 && x <= 7 && y >= 0 && y <= 7
     if board[x][y].nil?
       @moveset << [x, y]
       left_diagonal(board, x, y)
@@ -200,8 +206,8 @@ class Rook < Piece
   end
 
   def move_right(board, x, y)
-    @color == 'white' ? return unless y <= 7 : return unless y >= 0
     @color == 'white' ? y + 1 : y - 1
+    @color == 'white' ? return unless y <= 7 : return unless y >= 0
     if board[x][y].nil?
       @moveset << [x, y]
       move_right(board, x, y)
@@ -214,8 +220,8 @@ class Rook < Piece
   end
 
   def move_left(board, x, y)
-    @color == 'white' ? return unless y >= 0 : return unless y <= 7
     @color == 'white' ? y - 1 : y + 1
+    @color == 'white' ? return unless y >= 0 : return unless y <= 7
     if board[x][y].nil?
       @moveset << [x, y]
       move_left(board, x, y)
@@ -228,8 +234,8 @@ class Rook < Piece
   end
 
   def move_forward(board, x, y)
-    @color == 'white' ? return unless x <= 7 : return unless x >= 0
     @color == 'white' ? x + 1 : x - 1
+    @color == 'white' ? return unless x <= 7 : return unless x >= 0
     if board[x][y].nil?
       @moveset << [x, y]
       move_forward(board, x, y)
@@ -242,8 +248,8 @@ class Rook < Piece
   end
 
   def move_backward(board, x, y)
-    @color == 'white' ? return unless x >= 0 : return unless x <= 7
     @color == 'white' ? x - 1 : x + 1
+    @color == 'white' ? return unless x >= 0 : return unless x <= 7
     if board[x][y].nil?
       @moveset << [x, y]
       move_backward(board, x, y)
@@ -290,6 +296,7 @@ class Pawn < Piece
 
   def single_move(board, x, y)
     @color == 'white' ? x + 1 : x - 1
+    @color == 'white' ? return unless x <= 7 : return unless x >= 0
     return unless board[x][y].nil? 
     @moveset << [x, y]
   end
