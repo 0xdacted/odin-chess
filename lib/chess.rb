@@ -1,19 +1,20 @@
 class Piece
   attr_reader :piece, :color
-  attr_accessor :x, :y
+  attr_accessor :x, :y, :moveset
 
   def initialize(piece, x, y, color)
     @color = color
     @piece = piece
     @x = x
     @y = y
+    @moveset = []
   end
 end
 
 class King < Piece
+  attr_accessor :moved, :check, :checkmate
   def initialize(piece, x, y, color)
     super
-    @moveset = []
     @moved = false
     @check = false
     @checkmate = false
@@ -118,7 +119,6 @@ end
 class Queen < Piece
   def initialize(piece, x, y, color)
     super
-    @moveset = []
   end
 
   def forward(board, x, y)
@@ -267,7 +267,6 @@ end
 class Bishop < Piece
   def initialize(piece, x, y, color)
     super
-    @moveset = []
   end
 
   def right_diagonal(board, x, y)
@@ -320,7 +319,6 @@ end
 class Knight < Piece
   def initialize(piece, x, y, color)
     super
-    @moveset = []
   end
 
   def up_right(board, x, y)
@@ -431,9 +429,9 @@ class Knight < Piece
 end
 
 class Rook < Piece
+  attr_accessor :moved
   def initialize(piece, x, y, color)
     super
-    @moveset = []
     @moved = false
   end
 
@@ -526,9 +524,9 @@ class Rook < Piece
 end
 
 class Pawn < Piece
+  attr_accessor :moved, :double_moved
   def initialize(piece, x, y, color)
     super
-    @moveset = []
     @moved = false
     @double_moved = false
   end
@@ -622,7 +620,8 @@ end
 
 class Player
   attr_reader :pawn_one, :pawn_two, :pawn_three, :pawn_four, :pawn_five, :pawn_six, :pawn_seven, :pawn_eight,
-              :rook_one, :rook_two, :knight_one, :knight_two, :bishop_one, :bishop_two, :queen, :king, :pieces, :board
+              :rook_one, :rook_two, :knight_one, :knight_two, :bishop_one, :bishop_two, :queen, :king, :pieces
+  attr_accessor :board
 
   def initialize(name, color)
     @name = name
@@ -680,14 +679,14 @@ class Player
     y = gets.chomp
       puts "You have selected the y coordinate ##{y}"
       if x.class == Integer && y.class == Integer && x >= 0 && y >= 0 && x <= 7 && y <= 7
-        move_piece(board, x, y)
+        select_move(board, x, y)
       else
         puts "#{[x, y]} is an invalid coordinate, please try again"
         select_piece(board)
       end
   end
 
-  def move_piece(board, x, y)
+  def select_move(board, x, y)
     if !board[x][y].nil? && board[x][y].color == @color
       piece = board[x][y]
       puts "You have selected #{board[x][y].piece} #{@name}, please input the x coordinate (0 - 7) and press enter, then input the y coordinate (0 - 7) and press enter to move #{board[x][y].piece} to your desired location."
@@ -695,15 +694,32 @@ class Player
       puts "You have selected the x coordinate ##{x}, next input the y coordinate and press enter"
       y = gets.chomp
       puts "You have selected the y coordinate ##{y}"
-        if x.class == Integer && y.class == Integer && x >= 0 && y >= 0 && x <= 7 && y <= 7
-          capture?(board, x, y, piece)
+        if x.class == Integer && y.class == Integer && x >= 0 && y >= 0 && x <= 7 && y <= 7  
+          move_piece(board, x, y, piece)
         else
           puts "#{[x, y]} is an invalid coordinate, please try again"
-          move_piece(board, piece.x, piece.y)
+          select_move(board, piece.x, piece.y)
         end
     else
       puts "You do not control a piece at position #{[x, y]}, please select a position with a piece you control"
       select_piece(board)
+    end
+  end
+
+  def move_piece(board, x, y, piece)
+    piece.possible_moves
+    if piece.choose_move(x, y) == true
+      if  !board[x][y].nil? && board[x][y].color != @color
+        puts "You have captured the opponent's #{board[x][y].piece}"
+        board[x][y].x = nil
+        board[x][y].y = nil
+        board[x][y] = piece
+      else
+        board[x][y] = piece
+      end
+    else
+      puts "That is an invalid move for #{piece.piece}, please select again"
+      select_move(board, piece.x, piece.y)
     end
   end
 end
