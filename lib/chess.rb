@@ -15,6 +15,8 @@ class King < Piece
     super
     @moveset = []
     @moved = false
+    @check = false
+    @checkmate = false
   end
 
   def forward(board, x, y)
@@ -620,12 +622,13 @@ end
 
 class Player
   attr_reader :pawn_one, :pawn_two, :pawn_three, :pawn_four, :pawn_five, :pawn_six, :pawn_seven, :pawn_eight,
-              :rook_one, :rook_two, :knight_one, :knight_two, :bishop_one, :bishop_two, :queen, :king
+              :rook_one, :rook_two, :knight_one, :knight_two, :bishop_one, :bishop_two, :queen, :king, :pieces, :board
 
   def initialize(name, color)
     @name = name
     @color = color.downcase
     @color == 'white' ? initialize_white_pieces : initialize_black_pieces
+    @pieces = [@pawn_one, @pawn_two, @pawn_three, @pawn_four, @pawn_five, @pawn_six, @pawn_seven, @pawn_eight, @rook_one, @rook_two, @knight_one, @knight_two, @bishop_one, @bishop_two, @queen, @king]
   end
 
   def initialize_white_pieces
@@ -669,6 +672,22 @@ class Player
   def observe_board(board)
     @board = board
   end
+
+  def select_piece(board)
+    puts "It's your turn #{@name}, please input the x coordinate (0 - 7) of the piece you would like to move and press enter"
+    x = gets.chomp
+    puts "you have selected the x coordinate ##{x}, next input the y coordinate (0 - 7) and press enter"
+    y = gets.chomp
+      puts "you have selected the y coordinate ##{y}"
+      if x.class == Integer && y.class == Integer && x >= 0 && y >= 0 && x <= 7 && y <= 7
+        move_piece(board, x, y)
+      else
+        puts "#{[x, y]} is an invalid coordinate, please try again"
+        select_piece(board)
+      end
+  end
+
+  
 end
 
 class Board
@@ -682,16 +701,17 @@ class Board
     @player_one = Player.new(player_one_name, player_one_color)
     @player_two = Player.new(player_two_name, player_two_color)
     set_board
-  end
-
-  def set_board
-    set_player_one_pieces
-    set_player_two_pieces
+    transmit_board
   end
 
   def transmit_board
     @player_one.observe_board(board = @board)
     @player_two.observe_board(board = @board)
+  end
+
+  def set_board
+    set_player_one_pieces
+    set_player_two_pieces
   end
 
   def set_player_one_pieces
@@ -742,6 +762,8 @@ class Chess
     puts "Thanks for playing #{player_one} and #{player_two}, have fun!"
     @game = Board.new(player_one, 'white', player_two, 'black')
   end
+
+
 end
 
 Chess.new
