@@ -668,17 +668,15 @@ class Player
     @king = King.new('♛', 7, 4, 'black')
   end
 
-  def observe_board(board)
-    @board = board
-  end
-
   def select_piece(board)
-    puts "It's your turn #{@name}, please input the x coordinate (0 - 7) of the piece you would like to move and press enter"
-    x = gets.chomp
-    puts "You have selected the x coordinate ##{x}, next input the y coordinate (0 - 7) and press enter"
-    y = gets.chomp
+    puts "It's your turn #{@name}, please input the x coordinate (1 - 8) of the piece you would like to move and press enter"
+    x = gets.to_i 
+    puts "You have selected the x coordinate ##{x}, next input the y coordinate (1 - 8) and press enter"
+    y = gets.to_i
       puts "You have selected the y coordinate ##{y}"
-      if x.class == Integer && y.class == Integer && x >= 0 && y >= 0 && x <= 7 && y <= 7
+      if x > 0 && y > 0 && x <= 8 && y <= 8
+        x -= 1
+        y -= 1
         select_move(board, x, y)
       else
         puts "#{[x, y]} is an invalid coordinate, please try again"
@@ -689,25 +687,27 @@ class Player
   def select_move(board, x, y)
     if !board[x][y].nil? && board[x][y].color == @color
       piece = board[x][y]
-      puts "You have selected #{board[x][y].piece} #{@name}, please input the x coordinate (0 - 7) and press enter, then input the y coordinate (0 - 7) and press enter to move #{board[x][y].piece} to your desired location."
-      x = gets.chomp
+      puts "You have selected #{board[x][y].piece} #{@name}, please input the x coordinate (1 - 8) and press enter."
+      x = gets.to_i
       puts "You have selected the x coordinate ##{x}, next input the y coordinate and press enter"
-      y = gets.chomp
+      y = gets.to_i
       puts "You have selected the y coordinate ##{y}"
-        if x.class == Integer && y.class == Integer && x >= 0 && y >= 0 && x <= 7 && y <= 7  
+        if x > 0 && y > 0 && x <= 8 && y <= 8
+          x -= 1
+          y -= 1  
           move_piece(board, x, y, piece)
         else
           puts "#{[x, y]} is an invalid coordinate, please try again"
           select_move(board, piece.x, piece.y)
         end
     else
-      puts "You do not control a piece at position #{[x, y]}, please select a position with a piece you control"
+      puts "You do not control a piece at position #{[x + 1, y + 1]}, please select a position with a piece you control"
       select_piece(board)
     end
   end
 
   def move_piece(board, x, y, piece)
-    piece.possible_moves
+    piece.possible_moves(board, piece.x, piece.y)
     if piece.choose_move(x, y) == true
       if  !board[x][y].nil? && board[x][y].color != @color
         puts "You have captured the opponent's #{board[x][y].piece}"
@@ -721,6 +721,7 @@ class Player
       puts "That is an invalid move for #{piece.piece}, please select again"
       select_move(board, piece.x, piece.y)
     end
+    @board = board
   end
 end
 
@@ -735,12 +736,6 @@ class Board
     @player_one = Player.new(player_one_name, player_one_color)
     @player_two = Player.new(player_two_name, player_two_color)
     set_board
-    transmit_board
-  end
-
-  def transmit_board
-    @player_one.observe_board(board = @board)
-    @player_two.observe_board(board = @board)
   end
 
   def set_board
@@ -795,6 +790,18 @@ class Chess
     player_two = gets.chomp
     puts "Thanks for playing #{player_one} and #{player_two}, have fun!"
     @game = Board.new(player_one, 'white', player_two, 'black')
+    play
+  end
+
+  def play
+    loop do
+      p @game.board
+      @game.player_one.select_piece(@game.board)
+      @game.set_board
+      p @game.board
+      @game.player_two.selec_piece(@game.board)
+      @game.set_board
+    end
   end
 
 
