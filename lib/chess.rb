@@ -12,14 +12,121 @@ end
 class King < Piece
   def initialize(piece, x, y, color)
     super
-    @moveset 
+    @moveset = []
+    @moved = false
+  end
+
+  def forward(board, x, y)
+    @color == 'white' ? x + 1 : x - 1
+    @color == 'white' ? return unless x <= 7 : return unless x >= 0
+    if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
+      @moveset << [x, y]
+    else
+      return
+    end
+  end
+
+  def backward(board, x, y)
+    @color == 'white' ? x - 1 : x + 1
+    @color == 'white' ? return unless x >= 0 : return unless x <= 7
+    if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
+      @moveset << [x, y]
+    else
+      return
+    end
+  end
+
+  def right(board, x, y)
+    @color == 'white' ? y + 1 : y - 1
+    @color == 'white' ? return unless y <= 7 : return unless y >= 0
+    if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
+      @moveset << [x, y]
+    else
+      return
+    end
+  end
+
+  def left(board, x, y)
+    @color == 'white' ? y - 1 : y + 1
+    @color == 'white' ? return unless y >= 0 : return unless y <= 7
+    if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
+      @moveset << [x, y]
+    else
+      return
+    end
+  end
+
+  def down_right(board, x, y)
+    @color == 'white' ? x - 1 && y + 1 : x + 1 && y - 1
+    return if x > 7 || x < 0 || y > 7 || y < 0
+    if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
+      @moveset << [x, y]
+    else
+      return
+    end
+  end
+
+  def down_left(board, x, y)
+    @color == 'white' ? x - 1 && y - 1 : x + 1 && y + 1
+    return if x > 7 || x < 0 || y > 7 || y < 0
+    if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
+      @moveset << [x, y]
+    else
+      return
+    end
+  end
+
+  def up_right(board, x, y)
+    @color == 'white' ? x + 1 && y + 1 : x - 1 && y - 1
+    return if x > 7 || x < 0 || y > 7 || y < 0
+    if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
+      @moveset << [x, y]
+    else
+      return
+    end
+  end
+
+  def up_left(board, x, y)
+    @color == 'white' ? x + 1 && y - 1 : x - 1 && y + 1
+    return if x > 7 || x < 0 || y > 7 || y < 0
+    if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
+      @moveset << [x, y]
+    else
+      return
+    end
+  end
+
+  def possible_moves(board, x, y)
+    forward(board, x, y)
+    backward(board, x, y)
+    right(board, x, y)
+    left(board, x, y)
+    down_right(board, x, y)
+    down_left(board, x, y)
+    up_right(board, x, y)
+    up_left(board, x, y)
+  end
+
+  def choose_move([x, y])
+    if @moveset.bsearch {|i| i == [x, y]} == true
+      puts "You have moved #{self.piece} from #{[@x, @y]}to #{[x, y]}"
+      @x = x
+      @y = y
+      clear_moveset
+    else
+      return false
+    end
+  end
+
+  def clear_moveset
+    @moveset = []
   end
 end
 
 class Queen < Piece
   def initialize(piece, x, y, color)
     super
-    @moveset 
+    @moveset = []
   end
 
   def forward(board, x, y)
@@ -168,7 +275,7 @@ class Bishop < Piece
 
   def right_diagonal(board, x, y)
     @color == 'white' ? x + 1 && y + 1 : x - 1 && y - 1
-    return unless x >= 0 && x <= 7 && y >= 0 && y <= 7
+    return if x > 7 || x < 0 || y > 7 || y < 0
     if board[x][y].nil?
       @moveset << [x, y]
       right_diagonal(board, x, y)
@@ -182,7 +289,7 @@ class Bishop < Piece
 
   def left_diagonal(board, x, y)
     @color == 'white' ? x + 1 && y - 1 : x - 1 && y + 1
-    return unless x >= 0 && x <= 7 && y >= 0 && y <= 7
+    return if x > 7 || x < 0 || y > 7 || y < 0
     if board[x][y].nil?
       @moveset << [x, y]
       left_diagonal(board, x, y)
