@@ -676,9 +676,9 @@ class Player
   def select_piece(board)
     puts "It's your turn #{@name}, please input the x coordinate (0 - 7) of the piece you would like to move and press enter"
     x = gets.chomp
-    puts "you have selected the x coordinate ##{x}, next input the y coordinate (0 - 7) and press enter"
+    puts "You have selected the x coordinate ##{x}, next input the y coordinate (0 - 7) and press enter"
     y = gets.chomp
-      puts "you have selected the y coordinate ##{y}"
+      puts "You have selected the y coordinate ##{y}"
       if x.class == Integer && y.class == Integer && x >= 0 && y >= 0 && x <= 7 && y <= 7
         move_piece(board, x, y)
       else
@@ -687,7 +687,25 @@ class Player
       end
   end
 
-  
+  def move_piece(board, x, y)
+    if !board[x][y].nil? && board[x][y].color == @color
+      piece = board[x][y]
+      puts "You have selected #{board[x][y].piece} #{@name}, please input the x coordinate (0 - 7) and press enter, then input the y coordinate (0 - 7) and press enter to move #{board[x][y].piece} to your desired location."
+      x = gets.chomp
+      puts "You have selected the x coordinate ##{x}, next input the y coordinate and press enter"
+      y = gets.chomp
+      puts "You have selected the y coordinate ##{y}"
+        if x.class == Integer && y.class == Integer && x >= 0 && y >= 0 && x <= 7 && y <= 7
+          capture?(board, x, y, piece)
+        else
+          puts "#{[x, y]} is an invalid coordinate, please try again"
+          move_piece(board, piece.x, piece.y)
+        end
+    else
+      puts "You do not control a piece at position #{[x, y]}, please select a position with a piece you control"
+      select_piece(board)
+    end
+  end
 end
 
 class Board
