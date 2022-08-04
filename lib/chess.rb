@@ -18,7 +18,11 @@ class King < Piece
 
   def forward(board, x, y)
     @color == 'white' ? x + 1 : x - 1
-    @color == 'white' ? return unless x <= 7 : return unless x >= 0
+    if @color == 'white' 
+      return if x > 7
+    else 
+      return if x < 0
+    end
     if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
       @moveset << [x, y]
     else
@@ -28,7 +32,11 @@ class King < Piece
 
   def backward(board, x, y)
     @color == 'white' ? x - 1 : x + 1
-    @color == 'white' ? return unless x >= 0 : return unless x <= 7
+    if @color == 'white' 
+      return unless x >= 0 
+    else 
+      return unless x <= 7
+    end
     if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
       @moveset << [x, y]
     else
@@ -38,7 +46,11 @@ class King < Piece
 
   def right(board, x, y)
     @color == 'white' ? y + 1 : y - 1
-    @color == 'white' ? return unless y <= 7 : return unless y >= 0
+    if @color == 'white' 
+      return unless y <= 7 
+    else 
+      return unless y >= 0
+    end
     if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
       @moveset << [x, y]
     else
@@ -48,7 +60,11 @@ class King < Piece
 
   def left(board, x, y)
     @color == 'white' ? y - 1 : y + 1
-    @color == 'white' ? return unless y >= 0 : return unless y <= 7
+    if @color == 'white' 
+      return unless y >= 0 
+    else 
+      return unless y <= 7
+    end
     if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
       @moveset << [x, y]
     else
@@ -107,11 +123,12 @@ class King < Piece
     up_left(board, x, y)
   end
 
-  def choose_move([x, y])
+  def choose_move(x, y)
     if @moveset.bsearch {|i| i == [x, y]} == true
       puts "You have moved #{self.piece} from #{[@x, @y]}to #{[x, y]}"
       @x = x
       @y = y
+      @moved = true
       clear_moveset
     else
       return false
@@ -131,7 +148,11 @@ class Queen < Piece
 
   def forward(board, x, y)
     @color == 'white' ? x + 1 : x - 1
-    @color == 'white' ? return unless x <= 7 : return unless x >= 0
+    if @color == 'white' 
+      return unless x <= 7 
+    else
+      return unless x >= 0
+    end
     if board[x][y].nil?
       @moveset << [x, y]
       forward(board, x, y)
@@ -145,7 +166,11 @@ class Queen < Piece
 
   def backward(board, x, y)
     @color == 'white' ? x - 1 : x + 1
-    @color == 'white' ? return unless x >= 0 : return unless x <= 7
+    if @color == 'white' 
+      return unless x >= 0 
+    else 
+      return unless x <= 7
+    end
     if board[x][y].nil?
       @moveset << [x, y]
       backward(board, x, y)
@@ -155,10 +180,15 @@ class Queen < Piece
     else
       return
     end
+  end
 
   def right(board, x, y)
     @color == 'white' ? y + 1 : y - 1
-    @color == 'white' ? return unless y <= 7 : return unless y >= 0
+    if @color == 'white' 
+      return unless y <= 7 
+    else 
+      return unless y >= 0
+    end
     if board[x][y].nil?
       @moveset << [x, y]
       right(board, x, y)
@@ -172,7 +202,11 @@ class Queen < Piece
 
   def left(board, x, y)
     @color == 'white' ? y - 1 : y + 1
-    @color == 'white' ? return unless y >= 0 : return unless y <= 7
+    if @color == 'white' 
+      return unless y >= 0 
+    else 
+      return unless y <= 7
+    end
     if board[x][y].nil?
       @moveset << [x, y]
       left(board, x, y)
@@ -251,7 +285,7 @@ class Queen < Piece
     up_left(board, x, y)
   end
 
-  def choose_move([x, y])
+  def choose_move(x, y)
     if @moveset.bsearch {|i| i == [x, y]} == true
       puts "You have moved #{self.piece} from #{[@x, @y]}to #{[x, y]}"
       @x = x
@@ -306,7 +340,7 @@ class Bishop < Piece
     left_diagonal(board, x, y)
   end
 
-  def choose_move([x, y])
+  def choose_move(x, y)
     if @moveset.bsearch {|i| i == [x, y]} == true
       puts "You have moved #{self.piece} from #{[@x, @y]}to #{[x, y]}"
       @x = x
@@ -329,7 +363,11 @@ class Knight < Piece
   end
 
   def up_right(board, x, y)
-    @color == 'white' ? return unless x <= 5 && y <= 6 : return unless x >= 2 && y >= 1
+    if @color == 'white' 
+      return unless x <= 5 && y <= 6 
+    else 
+      return unless x >= 2 && y >= 1
+    end
     @color == 'white' ? x + 2 && y + 1 : x - 2 && y - 1
     if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
       @moveset << [x, y]
@@ -339,7 +377,11 @@ class Knight < Piece
   end
 
   def up_left(board, x, y)
-    @color == 'white' ? return unless x <= 5 && y >= 1 : return unless x >= 2 && y <= 6
+    if @color == 'white' 
+      return unless x <= 5 && y >= 1 
+    else 
+      return unless x >= 2 && y <= 6
+    end
     @color == 'white' ? x + 2 && y - 1 : x - 2 && y + 1
     if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
       @moveset << [x, y]
@@ -349,7 +391,11 @@ class Knight < Piece
   end
 
   def right_up(board, x, y)
-    @color == 'white' ? return unless x <= 6 && y <= 5 : return unless x >= 1 && y >= 2
+    if @color == 'white' 
+      return unless x <= 6 && y <= 5 
+    else 
+      return unless x >= 1 && y >= 2
+    end
     @color == 'white' ? x + 1 && y + 2 : x - 1 && y - 2
     if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
       @moveset << [x, y]
@@ -359,7 +405,11 @@ class Knight < Piece
   end
 
   def left_up(board, x, y)
-    @color == 'white' ? return unless x <= 6 && y >= 2 : x >= 1 && y <= 5
+    if @color == 'white' 
+      return unless x <= 6 && y >= 2 
+    else 
+      return unless x >= 1 && y <= 5
+    end
     @color == 'white' ? x + 1 && y - 2 : x - 1 && y + 2
     if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
       @moveset << [x, y]
@@ -369,7 +419,11 @@ class Knight < Piece
   end
 
   def down_right(board, x, y)
-    @color == 'white' ? return unless x >= 2 && y <= 6 : return unless x <= 5 && y >= 1
+    if @color == 'white' 
+      return unless x >= 2 && y <= 6 
+    else 
+      return unless x <= 5 && y >= 1
+    end
     @color == 'white' ? x - 2 && y + 1 : x + 2 && y - 1
     if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
       @moveset << [x, y]
@@ -379,7 +433,11 @@ class Knight < Piece
   end
 
   def down_left(board, x, y)
-    @color == 'white' ? return unless x >= 2 && y >= 1 : return unless x <= 5 && y <= 6
+    if @color == 'white' 
+      return unless x >= 2 && y >= 1 
+    else 
+      return unless x <= 5 && y <= 6
+    end 
     @color == 'white' ? x - 2 && y - 1 : x + 2 && y + 1
     if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
       @moveset << [x, y]
@@ -389,7 +447,11 @@ class Knight < Piece
   end
 
   def right_down(board, x, y)
-    @color == 'white' ? return unless x >= 1 && y <= 5 : return unless x <= 6 && y >= 2
+    if @color == 'white' 
+      return unless x >= 1 && y <= 5 
+    else 
+      return unless x <= 6 && y >= 2
+    end
     @color == 'white' ? x - 1 && y + 2 : x + 1 && y - 2
     if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
       @moveset << [x, y]
@@ -399,7 +461,11 @@ class Knight < Piece
   end
 
   def left_down(board, x, y)
-    @color == 'white' ? return unless x >= 1 && y >= 2 : return unless x <= 6 && y <= 5
+    if @color == 'white' 
+      return unless x >= 1 && y >= 2 
+    else 
+      return unless x <= 6 && y <= 5
+    end
     @color == 'white' ? x - 1 && y - 2 : x + 1 && y + 2
     if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
       @moveset << [x, y]
@@ -419,10 +485,9 @@ class Knight < Piece
     left_down(board, x, y)
   end
 
-  def choose_move([x, y])
+  def choose_move(x, y)
     if @moveset.bsearch {|i| i == [x, y]} == true
       puts "You have moved #{self.piece} from #{[@x, @y]}to #{[x, y]}"
-      @moved = true
       @x = x
       @y = y
       clear_moveset
@@ -445,7 +510,11 @@ class Rook < Piece
 
   def move_right(board, x, y)
     @color == 'white' ? y + 1 : y - 1
-    @color == 'white' ? return unless y <= 7 : return unless y >= 0
+    if @color == 'white' 
+      return unless y <= 7 
+    else
+      return unless y >= 0
+    end
     if board[x][y].nil?
       @moveset << [x, y]
       move_right(board, x, y)
@@ -459,7 +528,11 @@ class Rook < Piece
 
   def move_left(board, x, y)
     @color == 'white' ? y - 1 : y + 1
-    @color == 'white' ? return unless y >= 0 : return unless y <= 7
+    if @color == 'white' 
+      return unless y >= 0 
+    else 
+      return unless y <= 7
+    end
     if board[x][y].nil?
       @moveset << [x, y]
       move_left(board, x, y)
@@ -473,7 +546,11 @@ class Rook < Piece
 
   def move_forward(board, x, y)
     @color == 'white' ? x + 1 : x - 1
-    @color == 'white' ? return unless x <= 7 : return unless x >= 0
+    if @color == 'white' 
+      return unless x <= 7 
+    else 
+      return unless x >= 0
+    end
     if board[x][y].nil?
       @moveset << [x, y]
       move_forward(board, x, y)
@@ -487,7 +564,11 @@ class Rook < Piece
 
   def move_backward(board, x, y)
     @color == 'white' ? x - 1 : x + 1
-    @color == 'white' ? return unless x >= 0 : return unless x <= 7
+    if @color == 'white' 
+      return unless x >= 0 
+    else 
+      return unless x <= 7
+    end
     if board[x][y].nil?
       @moveset << [x, y]
       move_backward(board, x, y)
@@ -506,7 +587,7 @@ class Rook < Piece
     move_backward(board, x, y)
   end
 
-  def choose_move([x, y])
+  def choose_move(x, y)
     if @moveset.bsearch {|i| i == [x, y]} == true
       puts "You have moved #{self.piece} from #{[@x, @y]}to #{[x, y]}"
       @moved = true
@@ -534,7 +615,11 @@ class Pawn < Piece
 
   def single_move(board, x, y)
     @color == 'white' ? x + 1 : x - 1
-    @color == 'white' ? return unless x <= 7 : return unless x >= 0
+    if @color == 'white' 
+      return unless x <= 7 
+    else 
+      return unless x >= 0
+    end
     return unless board[x][y].nil? 
     @moveset << [x, y]
   end
@@ -583,7 +668,7 @@ class Pawn < Piece
     en_passant_left(board, x, y)
   end
 
-  def choose_move([x, y])
+  def choose_move(x, y)
     if @moveset.bsearch {|i| i == [x, y]} == true
       puts "You have moved #{self.piece} from #{[@x, @y]}to #{[x, y]}"
      if @color == 'white' && @x + 2 == x
