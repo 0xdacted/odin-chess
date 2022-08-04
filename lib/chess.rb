@@ -27,7 +27,7 @@ class King < Piece
     elsif x < 0
       return
     end
-    @moveset << [x, y] if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
+    @moveset << x && @moveset << y if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
   end
 
   def backward(board, x, y)
@@ -37,7 +37,7 @@ class King < Piece
     else
       return unless x <= 7
     end
-    @moveset << [x, y] if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
+    @moveset << x && @moveset << y if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
   end
 
   def right(board, x, y)
@@ -47,7 +47,7 @@ class King < Piece
     else
       return unless y >= 0
     end
-    @moveset << [x, y] if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
+    @moveset << x && @moveset << y if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
   end
 
   def left(board, x, y)
@@ -57,35 +57,35 @@ class King < Piece
     else
       return unless y <= 7
     end
-    @moveset << [x, y] if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
+    @moveset << x && @moveset << y if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
   end
 
   def down_right(board, x, y)
     @color == 'white' ? x -= 1 && y += 1 : x += 1 && y -= 1
     return if x > 7 || x < 0 || y > 7 || y < 0
 
-    @moveset << [x, y] if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
+    @moveset << x && @moveset << y if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
   end
 
   def down_left(board, x, y)
     @color == 'white' ? x -= 1 && y -= 1 : x += 1 && y += 1
     return if x > 7 || x < 0 || y > 7 || y < 0
 
-    @moveset << [x, y] if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
+    @moveset << x && @moveset << y if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
   end
 
   def up_right(board, x, y)
     @color == 'white' ? x += 1 && y += 1 : x -= 1 && y -= 1
     return if x > 7 || x < 0 || y > 7 || y < 0
 
-    @moveset << [x, y] if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
+    @moveset << x && @moveset << y if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
   end
 
   def up_left(board, x, y)
     @color == 'white' ? x += 1 && y -= 1 : x -= 1 && y += 1
     return if x > 7 || x < 0 || y > 7 || y < 0
 
-    @moveset << [x, y] if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
+    @moveset << x && @moveset << y if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
   end
 
   def possible_moves(board, x, y)
@@ -100,14 +100,16 @@ class King < Piece
   end
 
   def choose_move(x, y)
-    if @moveset.bsearch { |i| i == [x, y] } == true
-      puts "You have moved #{piece} from #{[@x, @y]}to #{[x, y]}"
-      @x = x
-      @y = y
-      @moved = true
-      clear_moveset
-    else
-      false
+    @moveset.each_with_index do |i, index|
+    
+        if index % 2 == 0 && @moveset[index] == x && @moveset[index + 1] == y
+        puts "You have moved #{piece} from #{[@x + 1, @y + 1]}to #{[x + 1, y + 1]}"
+        @x = x
+        @y = y
+        @moved = true
+        clear_moveset
+        return true
+      end
     end
   end
 
@@ -129,11 +131,10 @@ class Queen < Piece
       return unless x >= 0
     end
     if board[x][y].nil?
-      @moveset << [x, y]
+      @moveset << x && @moveset << y
       forward(board, x, y)
     elsif !board[x][y].nil? && board[x][y].color != @color
-      @moveset << [x, y]
-      nil
+      @moveset << x && @moveset << y
     end
   end
 
@@ -145,11 +146,10 @@ class Queen < Piece
       return unless x <= 7
     end
     if board[x][y].nil?
-      @moveset << [x, y]
+      @moveset << x && @moveset << y
       backward(board, x, y)
     elsif !board[x][y].nil? && board[x][y].color != @color
-      @moveset << [x, y]
-      nil
+      @moveset << x && @moveset << y
     end
   end
 
@@ -161,11 +161,10 @@ class Queen < Piece
       return unless y >= 0
     end
     if board[x][y].nil?
-      @moveset << [x, y]
+      @moveset << x && @moveset << y
       right(board, x, y)
     elsif !board[x][y].nil? && board[x][y].color != @color
-      @moveset << [x, y]
-      nil
+      @moveset << x && @moveset << y
     end
   end
 
@@ -177,11 +176,10 @@ class Queen < Piece
       return unless y <= 7
     end
     if board[x][y].nil?
-      @moveset << [x, y]
+      @moveset << x && @moveset << y
       left(board, x, y)
     elsif !board[x][y].nil? && board[x][y].color != @color
-      @moveset << [x, y]
-      nil
+      @moveset << x && @moveset << y
     end
   end
 
@@ -190,11 +188,10 @@ class Queen < Piece
     return if x > 7 || x < 0 || y > 7 || y < 0
 
     if board[x][y].nil?
-      @moveset << [x, y]
+      @moveset << x && @moveset << y
       down_right(board, x, y)
     elsif !board[x][y].nil? && board[x][y].color != @color
-      @moveset << [x, y]
-      nil
+      @moveset << x && @moveset << y
     end
   end
 
@@ -203,11 +200,10 @@ class Queen < Piece
     return if x > 7 || x < 0 || y > 7 || y < 0
 
     if board[x][y].nil?
-      @moveset << [x, y]
+      @moveset << x && @moveset << y
       down_left(board, x, y)
     elsif !board[x][y].nil? && board[x][y].color != @color
-      @moveset << [x, y]
-      nil
+      @moveset << x && @moveset << y
     end
   end
 
@@ -216,11 +212,10 @@ class Queen < Piece
     return if x > 7 || x < 0 || y > 7 || y < 0
 
     if board[x][y].nil?
-      @moveset << [x, y]
+      @moveset << x && @moveset << y
       up_right(board, x, y)
     elsif !board[x][y].nil? && board[x][y].color != @color
-      @moveset << [x, y]
-      nil
+      @moveset << x && @moveset << y
     end
   end
 
@@ -229,11 +224,10 @@ class Queen < Piece
     return if x > 7 || x < 0 || y > 7 || y < 0
 
     if board[x][y].nil?
-      @moveset << [x, y]
+      @moveset << x && @moveset << y
       up_left(board, x, y)
     elsif !board[x][y].nil? && board[x][y].color != @color
-      @moveset << [x, y]
-      nil
+      @moveset << x && @moveset << y
     end
   end
 
@@ -249,13 +243,15 @@ class Queen < Piece
   end
 
   def choose_move(x, y)
-    if @moveset.bsearch { |i| i == [x, y] } == true
-      puts "You have moved #{piece} from #{[@x, @y]}to #{[x, y]}"
-      @x = x
-      @y = y
-      clear_moveset
-    else
-      false
+    @moveset.each_with_index do |i, index|
+    
+      if index % 2 == 0 && @moveset[index] == x && @moveset[index + 1] == y
+      puts "You have moved #{piece} from #{[@x + 1, @y + 1]}to #{[x + 1, y + 1]}"
+        @x = x
+        @y = y
+        clear_moveset
+        return true
+      end
     end
   end
 
@@ -274,11 +270,10 @@ class Bishop < Piece
     return if x > 7 || x < 0 || y > 7 || y < 0
 
     if board[x][y].nil?
-      @moveset << [x, y]
+      @moveset << x && @moveset << y
       right_diagonal(board, x, y)
     elsif !board[x][y].nil? && board[x][y].color != @color
-      @moveset << [x, y]
-      nil
+      @moveset << x && @moveset << y
     end
   end
 
@@ -287,11 +282,10 @@ class Bishop < Piece
     return if x > 7 || x < 0 || y > 7 || y < 0
 
     if board[x][y].nil?
-      @moveset << [x, y]
+      @moveset << x && @moveset << y
       left_diagonal(board, x, y)
     elsif !board[x][y].nil? && board[x][y].color != @color
-      @moveset << [x, y]
-      nil
+      @moveset << x && @moveset << y
     end
   end
 
@@ -301,13 +295,15 @@ class Bishop < Piece
   end
 
   def choose_move(x, y)
-    if @moveset.bsearch { |i| i == [x, y] } == true
-      puts "You have moved #{piece} from #{[@x, @y]}to #{[x, y]}"
-      @x = x
-      @y = y
-      clear_moveset
-    else
-      false
+    @moveset.each_with_index do |i, index|
+    
+      if index % 2 == 0 && @moveset[index] == x && @moveset[index + 1] == y
+      puts "You have moved #{piece} from #{[@x + 1, @y + 1]}to #{[x + 1, y + 1]}"
+        @x = x
+        @y = y
+        clear_moveset
+        return true
+      end
     end
   end
 
@@ -328,7 +324,7 @@ class Knight < Piece
       return unless x >= 2 && y >= 1
     end
     @color == 'white' ? x += 2 && y += 1 : x -= 2 && y -= 1
-    @moveset << [x, y] if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
+    @moveset << x && @moveset << y if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
   end
 
   def up_left(board, x, y)
@@ -338,7 +334,7 @@ class Knight < Piece
       return unless x >= 2 && y <= 6
     end
     @color == 'white' ? x += 2 && y -= 1 : x -= 2 && y += 1
-    @moveset << [x, y] if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
+    @moveset << x && @moveset << y if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
   end
 
   def right_up(board, x, y)
@@ -348,7 +344,7 @@ class Knight < Piece
       return unless x >= 1 && y >= 2
     end
     @color == 'white' ? x += 1 && y += 2 : x -= 1 && y -= 2
-    @moveset << [x, y] if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
+    @moveset << x && @moveset << y if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
   end
 
   def left_up(board, x, y)
@@ -358,7 +354,7 @@ class Knight < Piece
       return unless x >= 1 && y <= 5
     end
     @color == 'white' ? x += 1 && y -= 2 : x -= 1 && y += 2
-    @moveset << [x, y] if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
+    @moveset << x && @moveset << y if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
   end
 
   def down_right(board, x, y)
@@ -368,7 +364,7 @@ class Knight < Piece
       return unless x <= 5 && y >= 1
     end
     @color == 'white' ? x -= 2 && y += 1 : x += 2 && y -= 1
-    @moveset << [x, y] if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
+    @moveset << x && @moveset << y if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
   end
 
   def down_left(board, x, y)
@@ -378,7 +374,7 @@ class Knight < Piece
       return unless x <= 5 && y <= 6
     end
     @color == 'white' ? x -= 2 && y -= 1 : x += 2 && y += 1
-    @moveset << [x, y] if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
+    @moveset << x && @moveset << y if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
   end
 
   def right_down(board, x, y)
@@ -388,7 +384,7 @@ class Knight < Piece
       return unless x <= 6 && y >= 2
     end
     @color == 'white' ? x -= 1 && y += 2 : x += 1 && y -= 2
-    @moveset << [x, y] if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
+    @moveset << x && @moveset << y if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
   end
 
   def left_down(board, x, y)
@@ -398,7 +394,7 @@ class Knight < Piece
       return unless x <= 6 && y <= 5
     end
     @color == 'white' ? x -= 1 && y -= 2 : x += 1 && y += 2
-    @moveset << [x, y] if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
+    @moveset << x && @moveset << y if board[x][y].nil? || !board[x][y].nil? && board[x][y].color != @color
   end
 
   def possible_moves(board, x, y)
@@ -413,13 +409,15 @@ class Knight < Piece
   end
 
   def choose_move(x, y)
-    if @moveset.bsearch { |i| i == [x, y] } == true
-      puts "You have moved #{piece} from #{[@x, @y]}to #{[x, y]}"
-      @x = x
-      @y = y
-      clear_moveset
-    else
-      false
+    @moveset.each_with_index do |i, index|
+    
+        if index % 2 == 0 && @moveset[index] == x && @moveset[index + 1] == y
+        puts "You have moved #{piece} from #{[@x + 1, @y + 1]}to #{[x + 1, y + 1]}"
+        @x = x
+        @y = y
+        clear_moveset
+        return true
+      end
     end
   end
 
@@ -443,11 +441,10 @@ class Rook < Piece
       return unless y >= 0
     end
     if board[x][y].nil?
-      @moveset << [x, y]
+      @moveset << x && @moveset << y
       move_right(board, x, y)
     elsif !board[x][y].nil? && board[x][y].color != @color
-      @moveset << [x, y]
-      nil
+      @moveset << x && @moveset << y
     end
   end
 
@@ -459,11 +456,10 @@ class Rook < Piece
       return unless y <= 7
     end
     if board[x][y].nil?
-      @moveset << [x, y]
+      @moveset << x && @moveset << y
       move_left(board, x, y)
     elsif !board[x][y].nil? && board[x][y].color != @color
-      @moveset << [x, y]
-      nil
+      @moveset << x && @moveset << y
     end
   end
 
@@ -475,11 +471,10 @@ class Rook < Piece
       return unless x >= 0
     end
     if board[x][y].nil?
-      @moveset << [x, y]
+      @moveset << x && @moveset << y
       move_forward(board, x, y)
     elsif !board[x][y].nil? && board[x][y].color != @color
-      @moveset << [x, y]
-      nil
+      @moveset << x && @moveset << y
     end
   end
 
@@ -491,11 +486,10 @@ class Rook < Piece
       return unless x <= 7
     end
     if board[x][y].nil?
-      @moveset << [x, y]
+      @moveset << x && @moveset << y
       move_backward(board, x, y)
     elsif !board[x][y].nil? && board[x][y].color != @color
-      @moveset << [x, y]
-      nil
+      @moveset << x && @moveset << y
     end
   end
 
@@ -507,14 +501,16 @@ class Rook < Piece
   end
 
   def choose_move(x, y)
-    if @moveset.bsearch { |i| i == [x, y] } == true
-      puts "You have moved #{piece} from #{[@x, @y]}to #{[x, y]}"
-      @moved = true
-      @x = x
-      @y = y
-      clear_moveset
-    else
-      false
+    @moveset.each_with_index do |i, index|
+    
+        if index % 2 == 0 && @moveset[index] == x && @moveset[index + 1] == y
+        puts "You have moved #{piece} from #{[@x + 1, @y + 1]}to #{[x + 1, y + 1]}"
+        @moved = true
+        @x = x
+        @y = y
+        clear_moveset
+        return true
+      end
     end
   end
 
@@ -539,7 +535,7 @@ class Pawn < Piece
       return unless x >= 0
     end
     return unless board[x][y].nil?
-    @moveset += [x, y]
+    @moveset << x && @moveset << y
   end
 
   def double_move(board, x, y)
@@ -551,21 +547,21 @@ class Pawn < Piece
     @color == 'white' ? x += 1 : x -= 1
     return unless board[x][y].nil?
 
-    @moveset += [x, y]
+    @moveset << x && @moveset << y
   end
 
   def capture_right(board, x, y)
     @color == 'white' ? x += 1 && y += 1 : x -= 1 && y -= 1
     return unless !board[x][y].nil? && board[x][y].color != @color
 
-    @moveset += [x, y]
+    @moveset << x && @moveset << y
   end
 
   def capture_left(board, x, y)
     @color == 'white' ? x += 1 && y -= 1 : x -= 1 && y += 1
     return unless !board[x][y].nil? && board[x][y].color != @color
 
-    @moveset += [x, y]
+    @moveset << x && @moveset << y
   end
 
   def en_passant_right(board, x, y)
@@ -573,7 +569,7 @@ class Pawn < Piece
     return unless board[x][y].instance_of?(Pawn) && board[x][y].color != @color && board[x][y].double_moved == true
 
     @color == 'white' ? x += 1 : x -= 1
-    @moveset += [x, y]
+    @moveset << x && @moveset << y
   end
 
   def en_passant_left(board, x, y)
@@ -581,7 +577,7 @@ class Pawn < Piece
     return unless board[x][y].instance_of?(Pawn) && board[x][y].color != @color && board[x][y].double_moved == true
 
     @color == 'white' ? x -= 1 : x += 1
-    @moveset += [x, y]
+    @moveset << x && @moveset << y
   end
 
   def possible_moves(board, x, y)
@@ -594,8 +590,11 @@ class Pawn < Piece
   end
 
   def choose_move(x, y)
-    if @moveset.bsearch { |i| i == [x, y] } == true
-      puts "You have moved #{piece} from #{[@x, @y]}to #{[x, y]}"
+    @moveset.each_with_index do |i, index|
+      puts i
+    
+      if index % 2 == 0 && @moveset[index] == x && @moveset[index + 1] == y
+      puts "You have moved #{piece} from #{[@x + 1, @y + 1]}to #{[x + 1, y + 1]}"
       @double_moved = if @color == 'white' && @x + 2 == x
                         true
                       elsif @color == 'black' && @x - 2 == x
@@ -603,12 +602,12 @@ class Pawn < Piece
                       else
                         false
                       end
-      @moved = true
-      @x = x
-      @y = y
-      clear_moveset
-    else
-      false
+        @moved = true
+        @x = x
+        @y = y
+        clear_moveset
+        return true
+      end
     end
   end
 
@@ -686,7 +685,7 @@ class Player
   def select_move(board, x, y)
     if !board[x][y].nil? && board[x][y].color == @color
       piece = board[x][y]
-      puts "You have selected #{piece.piece} #{@name}, please input the x coordinate (1 - 8) you would like #{piece.piece} to move to and press enter."
+      puts "You have selected #{piece.piece} at #{[x + 1, y + 1]}, please input the x coordinate (1 - 8) you would like #{piece.piece} to move to and press enter."
       x = gets.to_i
       puts "You have selected the x coordinate ##{x}, next input the y coordinate and press enter"
       y = gets.to_i
@@ -717,6 +716,7 @@ class Player
         board[x][y] = piece
       end
     else
+      piece.moveset = []
       puts "That is an invalid move for #{piece.piece}, please select again"
       select_move(board, piece.x, piece.y)
     end
@@ -794,10 +794,8 @@ class Chess
 
   def play
     loop do
-      p @game.board
       @game.player_one.select_piece(@game.board)
       @game.set_board
-      p @game.board
       @game.player_two.select_piece(@game.board)
       @game.set_board
     end
