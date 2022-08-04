@@ -132,6 +132,32 @@ class Queen < Piece
       return
     end
   end
+
+  def possible_moves(board, x, y)
+    forward(board, x, y)
+    backward(board, x, y)
+    right(board, x, y)
+    left(board, x, y)
+    down_right(board, x, y)
+    down_left(board, x, y)
+    up_right(board, x, y)
+    up_left(board, x, y)
+  end
+
+  def choose_move([x, y])
+    if @moveset.bsearch {|i| i == [x, y]} == true
+      puts "You have moved #{self.piece} from #{[@x, @y]}to #{[x, y]}"
+      @x = x
+      @y = y
+      clear_moveset
+    else
+      return false
+    end
+  end
+
+  def clear_moveset
+    @moveset = []
+  end
 end
 
 class Bishop < Piece
