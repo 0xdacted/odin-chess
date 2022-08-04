@@ -22,10 +22,115 @@ class Queen < Piece
     @moveset 
   end
 
-  # def forward(board, x, y)
-  #   @color == 'white' ? x + 1 : x - 1
-  #   return unless x >= 0 && x <= 7 
-  
+  def forward(board, x, y)
+    @color == 'white' ? x + 1 : x - 1
+    @color == 'white' ? return unless x <= 7 : return unless x >= 0
+    if board[x][y].nil?
+      @moveset << [x, y]
+      forward(board, x, y)
+    elsif !board[x][y].nil? && board[x][y].color != @color
+      @moveset << [x, y]
+      return
+    else
+      return
+    end
+  end
+
+  def backward(board, x, y)
+    @color == 'white' ? x - 1 : x + 1
+    @color == 'white' ? return unless x >= 0 : return unless x <= 7
+    if board[x][y].nil?
+      @moveset << [x, y]
+      backward(board, x, y)
+    elsif !board[x][y].nil? && board[x][y].color != @color
+      @moveset << [x, y]
+      return
+    else
+      return
+    end
+
+  def right(board, x, y)
+    @color == 'white' ? y + 1 : y - 1
+    @color == 'white' ? return unless y <= 7 : return unless y >= 0
+    if board[x][y].nil?
+      @moveset << [x, y]
+      right(board, x, y)
+    elsif !board[x][y].nil? && board[x][y].color != @color
+      @moveset << [x, y]
+      return
+    else
+      return
+    end
+  end
+
+  def left(board, x, y)
+    @color == 'white' ? y - 1 : y + 1
+    @color == 'white' ? return unless y >= 0 : return unless y <= 7
+    if board[x][y].nil?
+      @moveset << [x, y]
+      left(board, x, y)
+    elsif !board[x][y].nil? && board[x][y].color != @color
+      @moveset << [x, y]
+      return
+    else
+      return
+    end
+  end
+
+  def down_right(board, x, y)
+    @color == 'white' ? x - 1 && y + 1 : x + 1 && y - 1
+    return if x > 7 || x < 0 || y > 7 || y < 0
+    if board[x][y].nil?
+      @moveset << [x, y]
+      down_right(board, x, y)
+    elsif !board[x][y].nil? && board[x][y].color != @color
+      @moveset << [x, y]
+      return
+    else
+      return
+    end
+  end
+
+  def down_left(board, x, y)
+    @color == 'white' ? x - 1 && y - 1 : x + 1 && y + 1
+    return if x > 7 || x < 0 || y > 7 || y < 0
+    if board[x][y].nil?
+      @moveset << [x, y]
+      down_left(board, x, y)
+    elsif !board[x][y].nil? && board[x][y].color != @color
+      @moveset << [x, y]
+      return
+    else
+      return
+    end
+  end
+
+  def up_right(board, x, y)
+    @color == 'white' ? x + 1 && y + 1 : x - 1 && y - 1
+    return if x > 7 || x < 0 || y > 7 || y < 0
+    if board[x][y].nil?
+      @moveset << [x, y]
+      up_right(board, x, y)
+    elsif !board[x][y].nil? && board[x][y].color != @color
+      @moveset << [x, y]
+      return
+    else
+      return
+    end
+  end
+
+  def up_left(board, x, y)
+    @color == 'white' ? x + 1 && y - 1 : x - 1 && y + 1
+    return if x > 7 || x < 0 || y > 7 || y < 0
+    if board[x][y].nil?
+      @moveset << [x, y]
+      up_left(board, x, y)
+    elsif !board[x][y].nil? && board[x][y].color != @color
+      @moveset << [x, y]
+      return
+    else
+      return
+    end
   end
 end
 
