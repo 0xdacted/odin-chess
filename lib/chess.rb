@@ -591,7 +591,7 @@ class Pawn < Piece
     return unless board[x][y].instance_of?(Pawn) && board[x][y].color != @color && board[x][y].double_moved == true
    
     @color == 'white' ? x += 1 : x -= 1
-    @moveset << x && @moveset << y
+    @moveset << x && @moveset << y && @moveset << 'en' && @moveset << 'passant'
   end
 
   def en_passant_left(board, x, y)
@@ -599,7 +599,7 @@ class Pawn < Piece
     return unless board[x][y].instance_of?(Pawn) && board[x][y].color != @color && board[x][y].double_moved == true
 
     @color == 'white' ? x -= 1 : x += 1
-    @moveset << x && @moveset << y
+    @moveset << x && @moveset << y && @moveset << 'en' && @moveset << 'passant'
   end
 
   def possible_moves(board, x, y)
@@ -611,7 +611,7 @@ class Pawn < Piece
     en_passant_left(board, x, y)
   end
 
-  def choose_move(x, y)
+  def choose_move(x, y, board)
     @moveset.each_with_index do |i, index|
     
       if index % 2 == 0 && @moveset[index] == x && @moveset[index + 1] == y
@@ -623,6 +623,16 @@ class Pawn < Piece
                       else
                         false
                       end
+
+                      if @moveset[index + 2] == 'en' 
+                        if @color == 'white'
+                          puts "You have captured #{board[x - 1][y].piece}"
+                          board[x - 1][y].captured
+                        else 
+                          puts "You have captured #{board[x + 1][y].piece}"
+                          board[x + 1][y].captured
+                        end
+                      end
         @moved = true
         @x = x
         @y = y
@@ -630,6 +640,10 @@ class Pawn < Piece
         return true
       end
     end
+
+   
+      
+
   end
 
   def clear_moveset
@@ -737,18 +751,10 @@ class Player
 
   def move_piece(board, x, y, piece)
     piece.possible_moves(board, piece.x, piece.y)
-    if piece.choose_move(x, y) == true
+    if piece.choose_move(x, y, board) == true
       if  !board[x][y].nil? && board[x][y].color != @color
         puts "You have captured the opponent's #{board[x][y].piece}"
         board[x][y].captured 
-        board[x][y] = piece
-      elsif !board[x - 1][y].nil? && board[x - 1][y].color != @color && piece.instance_of?(Pawn) && board[x - 1][y].instance_of?(Pawn) && board[x - 1][y].double_moved == true
-        puts "You have captured the opponent's #{board[x - 1][y].piece}"
-        board[x - 1][y].captured 
-        board[x][y] = piece
-      elsif !board[x + 1][y].nil? && board[x + 1][y].color != @color && piece.instance_of?(Pawn) && board[x + 1][y].instance_of?(Pawn) && board[x + 1 ][y].double_moved == true
-        puts "You have captured the opponent's #{board[x + 1][y].piece}"
-        board[x + 1][y].captured 
         board[x][y] = piece
       else
         board[x][y] = piece
