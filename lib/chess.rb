@@ -266,11 +266,11 @@ class Bishop < Piece
   end
 
   def right_diagonal(board, x, y)
-   
-   @color == 'white' ? (x += 1) && (y += 1) : (x -= 1) && (y -= 1)
   
+   @color == 'white' ? (x += 1) && (y += 1) : (x -= 1) && (y -= 1)
+
     return if x > 7 || x < 0 || y > 7 || y < 0
-    
+  
     if board[x][y].nil?
       @moveset << x && @moveset << y
       right_diagonal(board, x, y)
@@ -738,8 +738,13 @@ class Board
   end
 
   def set_board
+    clear_board
     set_player_one_pieces
     set_player_two_pieces
+  end
+  
+  def clear_board
+    @board = Array.new(8) {Array.new(8)}
   end
 
   def set_player_one_pieces
