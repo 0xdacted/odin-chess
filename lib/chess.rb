@@ -104,7 +104,7 @@ class King < Piece
     up_left(board, x, y)
   end
 
-  def choose_move(x, y)
+  def choose_move(x, y, board)
     @moveset.each_with_index do |i, index|
     
         if index % 2 == 0 && @moveset[index] == x && @moveset[index + 1] == y
@@ -247,7 +247,7 @@ class Queen < Piece
     up_left(board, x, y)
   end
 
-  def choose_move(x, y)
+  def choose_move(x, y, board)
     @moveset.each_with_index do |i, index|
     
       if index % 2 == 0 && @moveset[index] == x && @moveset[index + 1] == y
@@ -274,7 +274,7 @@ class Bishop < Piece
     super
   end
 
-  def right_diagonal(board, x, y)
+  def up_right_diagonal(board, x, y)
   
    @color == 'white' ? (x += 1) && (y += 1) : (x -= 1) && (y -= 1)
 
@@ -282,29 +282,56 @@ class Bishop < Piece
   
     if board[x][y].nil?
       @moveset << x && @moveset << y
-      right_diagonal(board, x, y)
+      up_right_diagonal(board, x, y)
     elsif !board[x][y].nil? && board[x][y].color != @color
       @moveset << x && @moveset << y
     end
   end
 
-  def left_diagonal(board, x, y)
-    @color == 'white' ? (x += 1) && (y -= 1) : (x += 1) && (y += 1)
+  def up_left_diagonal(board, x, y)
+    @color == 'white' ? (x += 1) && (y -= 1) : (x -= 1) && (y += 1)
     return if x > 7 || x < 0 || y > 7 || y < 0
     if board[x][y].nil?
       @moveset << x && @moveset << y
-      left_diagonal(board, x, y)
+      up_left_diagonal(board, x, y)
     elsif !board[x][y].nil? && board[x][y].color != @color
       @moveset << x && @moveset << y
     end
   end
 
+  def down_right_diagonal(board, x, y)
+  
+    @color == 'white' ? (x -= 1) && (y += 1) : (x += 1) && (y -= 1)
+ 
+     return if x > 7 || x < 0 || y > 7 || y < 0
+   
+     if board[x][y].nil?
+       @moveset << x && @moveset << y
+       down_right_diagonal(board, x, y)
+     elsif !board[x][y].nil? && board[x][y].color != @color
+       @moveset << x && @moveset << y
+     end
+   end
+ 
+   def down_left_diagonal(board, x, y)
+     @color == 'white' ? (x -= 1) && (y -= 1) : (x += 1) && (y += 1)
+     return if x > 7 || x < 0 || y > 7 || y < 0
+     if board[x][y].nil?
+       @moveset << x && @moveset << y
+       down_left_diagonal(board, x, y)
+     elsif !board[x][y].nil? && board[x][y].color != @color
+       @moveset << x && @moveset << y
+     end
+   end
+
   def possible_moves(board, x, y)
-    right_diagonal(board, x, y)
-    left_diagonal(board, x, y)
+    up_right_diagonal(board, x, y)
+    up_left_diagonal(board, x, y)
+    down_right_diagonal(board, x, y)
+    down_left_diagonal(board, x, y)
   end
 
-  def choose_move(x, y)
+  def choose_move(x, y, board)
     @moveset.each_with_index do |i, index|
 
       if index % 2 == 0 && @moveset[index] == x && @moveset[index + 1] == y
@@ -422,7 +449,7 @@ class Knight < Piece
     left_down(board, x, y)
   end
 
-  def choose_move(x, y)
+  def choose_move(x, y, board)
     @moveset.each_with_index do |i, index|
     
         if index % 2 == 0 && @moveset[index] == x && @moveset[index + 1] == y
@@ -518,7 +545,7 @@ class Rook < Piece
     move_backward(board, x, y)
   end
 
-  def choose_move(x, y)
+  def choose_move(x, y, board)
     @moveset.each_with_index do |i, index|
     
         if index % 2 == 0 && @moveset[index] == x && @moveset[index + 1] == y
