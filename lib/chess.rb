@@ -18,6 +18,7 @@ end
 
 class King < Piece
   attr_accessor :moved, :check, :checkmate
+
   def initialize(piece, x, y, color)
     super
     @moved = false
@@ -104,17 +105,16 @@ class King < Piece
     up_left(board, x, y)
   end
 
-  def choose_move(x, y, board)
-    @moveset.each_with_index do |i, index|
-    
-        if index % 2 == 0 && @moveset[index] == x && @moveset[index + 1] == y
-        puts "You have moved #{piece} from #{[@x + 1, @y + 1]} to #{[x + 1, y + 1]}"
-        @x = x
-        @y = y
-        @moved = true
-        clear_moveset
-        return true
-      end
+  def choose_move(x, y, _board)
+    @moveset.each_with_index do |_i, index|
+      next unless index.even? && @moveset[index] == x && @moveset[index + 1] == y
+
+      puts "You have moved #{piece} from #{[@x + 1, @y + 1]} to #{[x + 1, y + 1]}"
+      @x = x
+      @y = y
+      @moved = true
+      clear_moveset
+      return true
     end
   end
 
@@ -247,16 +247,15 @@ class Queen < Piece
     up_left(board, x, y)
   end
 
-  def choose_move(x, y, board)
-    @moveset.each_with_index do |i, index|
-    
-      if index % 2 == 0 && @moveset[index] == x && @moveset[index + 1] == y
+  def choose_move(x, y, _board)
+    @moveset.each_with_index do |_i, index|
+      next unless index.even? && @moveset[index] == x && @moveset[index + 1] == y
+
       puts "You have moved #{piece} from #{[@x + 1, @y + 1]} to #{[x + 1, y + 1]}"
-        @x = x
-        @y = y
-        clear_moveset
-        return true
-      end
+      @x = x
+      @y = y
+      clear_moveset
+      return true
     end
   end
 
@@ -275,11 +274,10 @@ class Bishop < Piece
   end
 
   def up_right_diagonal(board, x, y)
-  
-   @color == 'white' ? (x += 1) && (y += 1) : (x -= 1) && (y -= 1)
+    @color == 'white' ? (x += 1) && (y += 1) : (x -= 1) && (y -= 1)
 
     return if x > 7 || x < 0 || y > 7 || y < 0
-  
+
     if board[x][y].nil?
       @moveset << x && @moveset << y
       up_right_diagonal(board, x, y)
@@ -291,6 +289,7 @@ class Bishop < Piece
   def up_left_diagonal(board, x, y)
     @color == 'white' ? (x += 1) && (y -= 1) : (x -= 1) && (y += 1)
     return if x > 7 || x < 0 || y > 7 || y < 0
+
     if board[x][y].nil?
       @moveset << x && @moveset << y
       up_left_diagonal(board, x, y)
@@ -300,29 +299,29 @@ class Bishop < Piece
   end
 
   def down_right_diagonal(board, x, y)
-  
     @color == 'white' ? (x -= 1) && (y += 1) : (x += 1) && (y -= 1)
- 
-     return if x > 7 || x < 0 || y > 7 || y < 0
-   
-     if board[x][y].nil?
-       @moveset << x && @moveset << y
-       down_right_diagonal(board, x, y)
-     elsif !board[x][y].nil? && board[x][y].color != @color
-       @moveset << x && @moveset << y
-     end
-   end
- 
-   def down_left_diagonal(board, x, y)
-     @color == 'white' ? (x -= 1) && (y -= 1) : (x += 1) && (y += 1)
-     return if x > 7 || x < 0 || y > 7 || y < 0
-     if board[x][y].nil?
-       @moveset << x && @moveset << y
-       down_left_diagonal(board, x, y)
-     elsif !board[x][y].nil? && board[x][y].color != @color
-       @moveset << x && @moveset << y
-     end
-   end
+
+    return if x > 7 || x < 0 || y > 7 || y < 0
+
+    if board[x][y].nil?
+      @moveset << x && @moveset << y
+      down_right_diagonal(board, x, y)
+    elsif !board[x][y].nil? && board[x][y].color != @color
+      @moveset << x && @moveset << y
+    end
+  end
+
+  def down_left_diagonal(board, x, y)
+    @color == 'white' ? (x -= 1) && (y -= 1) : (x += 1) && (y += 1)
+    return if x > 7 || x < 0 || y > 7 || y < 0
+
+    if board[x][y].nil?
+      @moveset << x && @moveset << y
+      down_left_diagonal(board, x, y)
+    elsif !board[x][y].nil? && board[x][y].color != @color
+      @moveset << x && @moveset << y
+    end
+  end
 
   def possible_moves(board, x, y)
     up_right_diagonal(board, x, y)
@@ -331,16 +330,15 @@ class Bishop < Piece
     down_left_diagonal(board, x, y)
   end
 
-  def choose_move(x, y, board)
-    @moveset.each_with_index do |i, index|
+  def choose_move(x, y, _board)
+    @moveset.each_with_index do |_i, index|
+      next unless index.even? && @moveset[index] == x && @moveset[index + 1] == y
 
-      if index % 2 == 0 && @moveset[index] == x && @moveset[index + 1] == y
       puts "You have moved #{piece} from #{[@x + 1, @y + 1]} to #{[x + 1, y + 1]}"
-        @x = x
-        @y = y
-        clear_moveset
-        return true
-      end
+      @x = x
+      @y = y
+      clear_moveset
+      return true
     end
   end
 
@@ -449,16 +447,15 @@ class Knight < Piece
     left_down(board, x, y)
   end
 
-  def choose_move(x, y, board)
-    @moveset.each_with_index do |i, index|
-    
-        if index % 2 == 0 && @moveset[index] == x && @moveset[index + 1] == y
-        puts "You have moved #{piece} from #{[@x + 1, @y + 1]} to #{[x + 1, y + 1]}"
-        @x = x
-        @y = y
-        clear_moveset
-        return true
-      end
+  def choose_move(x, y, _board)
+    @moveset.each_with_index do |_i, index|
+      next unless index.even? && @moveset[index] == x && @moveset[index + 1] == y
+
+      puts "You have moved #{piece} from #{[@x + 1, @y + 1]} to #{[x + 1, y + 1]}"
+      @x = x
+      @y = y
+      clear_moveset
+      return true
     end
   end
 
@@ -473,6 +470,7 @@ end
 
 class Rook < Piece
   attr_accessor :moved
+
   def initialize(piece, x, y, color)
     super
     @moved = false
@@ -545,17 +543,16 @@ class Rook < Piece
     move_backward(board, x, y)
   end
 
-  def choose_move(x, y, board)
-    @moveset.each_with_index do |i, index|
-    
-        if index % 2 == 0 && @moveset[index] == x && @moveset[index + 1] == y
-        puts "You have moved #{piece} from #{[@x + 1, @y + 1]} to #{[x + 1, y + 1]}"
-        @moved = true
-        @x = x
-        @y = y
-        clear_moveset
-        return true
-      end
+  def choose_move(x, y, _board)
+    @moveset.each_with_index do |_i, index|
+      next unless index.even? && @moveset[index] == x && @moveset[index + 1] == y
+
+      puts "You have moved #{piece} from #{[@x + 1, @y + 1]} to #{[x + 1, y + 1]}"
+      @moved = true
+      @x = x
+      @y = y
+      clear_moveset
+      return true
     end
   end
 
@@ -570,6 +567,7 @@ end
 
 class Pawn < Piece
   attr_accessor :moved, :double_moved
+
   def initialize(piece, x, y, color)
     super
     @moved = false
@@ -584,6 +582,7 @@ class Pawn < Piece
       return unless x >= 0
     end
     return unless board[x][y].nil?
+
     @moveset << x && @moveset << y
   end
 
@@ -616,7 +615,7 @@ class Pawn < Piece
   def en_passant_right(board, x, y)
     @color == 'white' ? y += 1 : y -= 1
     return unless board[x][y].instance_of?(Pawn) && board[x][y].color != @color && board[x][y].double_moved == true
-   
+
     @color == 'white' ? x += 1 : x -= 1
     @moveset << x && @moveset << y && @moveset << 'en' && @moveset << 'passant'
   end
@@ -639,9 +638,9 @@ class Pawn < Piece
   end
 
   def choose_move(x, y, board)
-    @moveset.each_with_index do |i, index|
-    
-      if index % 2 == 0 && @moveset[index] == x && @moveset[index + 1] == y
+    @moveset.each_with_index do |_i, index|
+      next unless index.even? && @moveset[index] == x && @moveset[index + 1] == y
+
       puts "You have moved #{piece} from #{[@x + 1, @y + 1]} to #{[x + 1, y + 1]}"
       @double_moved = if @color == 'white' && @x + 2 == x
                         true
@@ -651,26 +650,21 @@ class Pawn < Piece
                         false
                       end
 
-                      if @moveset[index + 2] == 'en' 
-                        if @color == 'white'
-                          puts "You have captured #{board[x - 1][y].piece}"
-                          board[x - 1][y].captured
-                        else 
-                          puts "You have captured #{board[x + 1][y].piece}"
-                          board[x + 1][y].captured
-                        end
-                      end
-        @moved = true
-        @x = x
-        @y = y
-        clear_moveset
-        return true
+      if @moveset[index + 2] == 'en'
+        if @color == 'white'
+          puts "You have captured #{board[x - 1][y].piece}"
+          board[x - 1][y].captured
+        else
+          puts "You have captured #{board[x + 1][y].piece}"
+          board[x + 1][y].captured
+        end
       end
+      @moved = true
+      @x = x
+      @y = y
+      clear_moveset
+      return true
     end
-
-   
-      
-
   end
 
   def clear_moveset
@@ -682,9 +676,7 @@ class Pawn < Piece
   end
 
   def double_moved?
-    if @double_moved == true
-      return true
-    end
+    true if @double_moved == true
   end
 end
 
@@ -697,7 +689,8 @@ class Player
     @name = name
     @color = color.downcase
     @color == 'white' ? initialize_white_pieces : initialize_black_pieces
-    @pieces = [@pawn_one, @pawn_two, @pawn_three, @pawn_four, @pawn_five, @pawn_six, @pawn_seven, @pawn_eight, @rook_one, @rook_two, @knight_one, @knight_two, @bishop_one, @bishop_two, @queen, @king]
+    @pieces = [@pawn_one, @pawn_two, @pawn_three, @pawn_four, @pawn_five, @pawn_six, @pawn_seven, @pawn_eight,
+               @rook_one, @rook_two, @knight_one, @knight_two, @bishop_one, @bishop_two, @queen, @king]
   end
 
   def initialize_white_pieces
@@ -740,36 +733,37 @@ class Player
 
   def select_piece(board)
     puts "It's your turn #{@name}, please input the x coordinate (1 - 8) of the piece you would like to move and press enter"
-    x = gets.to_i 
+    x = gets.to_i
     puts "You have selected the x coordinate ##{x}, next input the y coordinate (1 - 8) and press enter"
     y = gets.to_i
-      puts "You have selected the y coordinate ##{y}"
-      if x > 0 && y > 0 && x <= 8 && y <= 8
-        x -= 1
-        y -= 1
-        select_move(board, x, y)
-      else
-        puts "#{[x, y]} is an invalid coordinate, please try again"
-        select_piece(board)
-      end
+    puts "You have selected the y coordinate ##{y}"
+    if x > 0 && y > 0 && x <= 8 && y <= 8
+      x -= 1
+      y -= 1
+      select_move(board, x, y)
+    else
+      puts "#{[x, y]} is an invalid coordinate, please try again"
+      select_piece(board)
+    end
   end
 
   def select_move(board, x, y)
     if !board[x][y].nil? && board[x][y].color == @color
       piece = board[x][y]
-      puts "You have selected #{piece.piece} at #{[x + 1, y + 1]}, please input the x coordinate (1 - 8) you would like #{piece.piece} to move to and press enter."
+      puts "You have selected #{piece.piece} at #{[x + 1,
+                                                   y + 1]}, please input the x coordinate (1 - 8) you would like #{piece.piece} to move to and press enter."
       x = gets.to_i
       puts "You have selected the x coordinate ##{x}, next input the y coordinate and press enter"
       y = gets.to_i
       puts "You have selected the y coordinate ##{y}"
-        if x > 0 && y > 0 && x <= 8 && y <= 8
-          x -= 1
-          y -= 1  
-          move_piece(board, x, y, piece)
-        else
-          puts "#{[x, y]} is an invalid coordinate, please try again"
-          select_move(board, piece.x, piece.y)
-        end
+      if x > 0 && y > 0 && x <= 8 && y <= 8
+        x -= 1
+        y -= 1
+        move_piece(board, x, y, piece)
+      else
+        puts "#{[x, y]} is an invalid coordinate, please try again"
+        select_move(board, piece.x, piece.y)
+      end
     else
       puts "You do not control a piece at position #{[x + 1, y + 1]}, please select a position with a piece you control"
       select_piece(board)
@@ -779,9 +773,9 @@ class Player
   def move_piece(board, x, y, piece)
     piece.possible_moves(board, piece.x, piece.y)
     if piece.choose_move(x, y, board) == true
-      if  !board[x][y].nil? && board[x][y].color != @color
+      if !board[x][y].nil? && board[x][y].color != @color
         puts "You have captured the opponent's #{board[x][y].piece}"
-        board[x][y].captured 
+        board[x][y].captured
         board[x][y] = piece
       else
         board[x][y] = piece
@@ -813,47 +807,75 @@ class Board
     set_player_one_pieces
     set_player_two_pieces
   end
-  
+
   def clear_board
-    @board = Array.new(8) {Array.new(8)}
+    @board = Array.new(8) { Array.new(8) }
   end
 
   def set_player_one_pieces
-    unless @player_one.pawn_one.x == nil then @board[@player_one.pawn_one.x][@player_one.pawn_one.y] = @player_one.pawn_one end
-    unless @player_one.pawn_two.x == nil then @board[@player_one.pawn_two.x][@player_one.pawn_two.y] = @player_one.pawn_two end
-    unless @player_one.pawn_three.x == nil then @board[@player_one.pawn_three.x][@player_one.pawn_three.y] = @player_one.pawn_three end
-    unless @player_one.pawn_four.x == nil then @board[@player_one.pawn_four.x][@player_one.pawn_four.y] = @player_one.pawn_four end
-    unless @player_one.pawn_five.x == nil then @board[@player_one.pawn_five.x][@player_one.pawn_five.y] = @player_one.pawn_five end
-    unless @player_one.pawn_six.x == nil then @board[@player_one.pawn_six.x][@player_one.pawn_six.y] = @player_one.pawn_six end
-    unless @player_one.pawn_seven.x == nil then @board[@player_one.pawn_seven.x][@player_one.pawn_seven.y] = @player_one.pawn_seven end
-    unless @player_one.pawn_eight.x == nil then @board[@player_one.pawn_eight.x][@player_one.pawn_eight.y] = @player_one.pawn_eight end
-    unless @player_one.rook_one.x == nil then @board[@player_one.rook_one.x][@player_one.rook_one.y] = @player_one.rook_one end
-    unless @player_one.rook_two.x == nil then @board[@player_one.rook_two.x][@player_one.rook_two.y] = @player_one.rook_two end
-    unless @player_one.knight_one.x == nil then @board[@player_one.knight_one.x][@player_one.knight_one.y] = @player_one.knight_one end
-    unless @player_one.knight_two.x == nil then @board[@player_one.knight_two.x][@player_one.knight_two.y] = @player_one.knight_two end
-    unless @player_one.bishop_one.x == nil then @board[@player_one.bishop_one.x][@player_one.bishop_one.y] = @player_one.bishop_one end
-    unless @player_one.bishop_two.x == nil then @board[@player_one.bishop_two.x][@player_one.bishop_two.y] = @player_one.bishop_two end
-    unless @player_one.queen.x == nil then @board[@player_one.queen.x][@player_one.queen.y] = @player_one.queen end
-    unless @player_one.king.x == nil then @board[@player_one.king.x][@player_one.king.y] = @player_one.king end
+    unless @player_one.pawn_one.x.nil? then @board[@player_one.pawn_one.x][@player_one.pawn_one.y] =
+                                              @player_one.pawn_one end
+    unless @player_one.pawn_two.x.nil? then @board[@player_one.pawn_two.x][@player_one.pawn_two.y] =
+                                              @player_one.pawn_two end
+    unless @player_one.pawn_three.x.nil? then @board[@player_one.pawn_three.x][@player_one.pawn_three.y] =
+                                                @player_one.pawn_three end
+    unless @player_one.pawn_four.x.nil? then @board[@player_one.pawn_four.x][@player_one.pawn_four.y] =
+                                               @player_one.pawn_four end
+    unless @player_one.pawn_five.x.nil? then @board[@player_one.pawn_five.x][@player_one.pawn_five.y] =
+                                               @player_one.pawn_five end
+    unless @player_one.pawn_six.x.nil? then @board[@player_one.pawn_six.x][@player_one.pawn_six.y] =
+                                              @player_one.pawn_six end
+    unless @player_one.pawn_seven.x.nil? then @board[@player_one.pawn_seven.x][@player_one.pawn_seven.y] =
+                                                @player_one.pawn_seven end
+    unless @player_one.pawn_eight.x.nil? then @board[@player_one.pawn_eight.x][@player_one.pawn_eight.y] =
+                                                @player_one.pawn_eight end
+    unless @player_one.rook_one.x.nil? then @board[@player_one.rook_one.x][@player_one.rook_one.y] =
+                                              @player_one.rook_one end
+    unless @player_one.rook_two.x.nil? then @board[@player_one.rook_two.x][@player_one.rook_two.y] =
+                                              @player_one.rook_two end
+    unless @player_one.knight_one.x.nil? then @board[@player_one.knight_one.x][@player_one.knight_one.y] =
+                                                @player_one.knight_one end
+    unless @player_one.knight_two.x.nil? then @board[@player_one.knight_two.x][@player_one.knight_two.y] =
+                                                @player_one.knight_two end
+    unless @player_one.bishop_one.x.nil? then @board[@player_one.bishop_one.x][@player_one.bishop_one.y] =
+                                                @player_one.bishop_one end
+    unless @player_one.bishop_two.x.nil? then @board[@player_one.bishop_two.x][@player_one.bishop_two.y] =
+                                                @player_one.bishop_two end
+    @board[@player_one.queen.x][@player_one.queen.y] = @player_one.queen unless @player_one.queen.x.nil?
+    @board[@player_one.king.x][@player_one.king.y] = @player_one.king unless @player_one.king.x.nil?
   end
 
   def set_player_two_pieces
-    unless @player_two.pawn_one.x == nil then @board[@player_two.pawn_one.x][@player_two.pawn_one.y] = @player_two.pawn_one end
-    unless @player_two.pawn_two.x == nil then @board[@player_two.pawn_two.x][@player_two.pawn_two.y] = @player_two.pawn_two end
-    unless @player_two.pawn_three.x == nil then @board[@player_two.pawn_three.x][@player_two.pawn_three.y] = @player_two.pawn_three end
-    unless @player_two.pawn_four.x == nil then @board[@player_two.pawn_four.x][@player_two.pawn_four.y] = @player_two.pawn_four end
-    unless @player_two.pawn_five.x == nil then @board[@player_two.pawn_five.x][@player_two.pawn_five.y] = @player_two.pawn_five end
-    unless @player_two.pawn_six.x == nil then @board[@player_two.pawn_six.x][@player_two.pawn_six.y] = @player_two.pawn_six end
-    unless @player_two.pawn_seven.x == nil then @board[@player_two.pawn_seven.x][@player_two.pawn_seven.y] = @player_two.pawn_seven end
-    unless @player_two.pawn_eight.x == nil then @board[@player_two.pawn_eight.x][@player_two.pawn_eight.y] = @player_two.pawn_eight end
-    unless @player_two.rook_one.x == nil then @board[@player_two.rook_one.x][@player_two.rook_one.y] = @player_two.rook_one end
-    unless @player_two.rook_two.x == nil then @board[@player_two.rook_two.x][@player_two.rook_two.y] = @player_two.rook_two end
-    unless @player_two.knight_one.x == nil then @board[@player_two.knight_one.x][@player_two.knight_one.y] = @player_two.knight_one end
-    unless @player_two.knight_two.x == nil then @board[@player_two.knight_two.x][@player_two.knight_two.y] = @player_two.knight_two end
-    unless @player_two.bishop_one.x == nil then @board[@player_two.bishop_one.x][@player_two.bishop_one.y] = @player_two.bishop_one end
-    unless @player_two.bishop_two.x == nil then @board[@player_two.bishop_two.x][@player_two.bishop_two.y] = @player_two.bishop_two end
-    unless @player_two.queen.x == nil then @board[@player_two.queen.x][@player_two.queen.y] = @player_two.queen end
-    unless @player_two.king.x == nil then @board[@player_two.king.x][@player_two.king.y] = @player_two.king end
+    unless @player_two.pawn_one.x.nil? then @board[@player_two.pawn_one.x][@player_two.pawn_one.y] =
+                                              @player_two.pawn_one end
+    unless @player_two.pawn_two.x.nil? then @board[@player_two.pawn_two.x][@player_two.pawn_two.y] =
+                                              @player_two.pawn_two end
+    unless @player_two.pawn_three.x.nil? then @board[@player_two.pawn_three.x][@player_two.pawn_three.y] =
+                                                @player_two.pawn_three end
+    unless @player_two.pawn_four.x.nil? then @board[@player_two.pawn_four.x][@player_two.pawn_four.y] =
+                                               @player_two.pawn_four end
+    unless @player_two.pawn_five.x.nil? then @board[@player_two.pawn_five.x][@player_two.pawn_five.y] =
+                                               @player_two.pawn_five end
+    unless @player_two.pawn_six.x.nil? then @board[@player_two.pawn_six.x][@player_two.pawn_six.y] =
+                                              @player_two.pawn_six end
+    unless @player_two.pawn_seven.x.nil? then @board[@player_two.pawn_seven.x][@player_two.pawn_seven.y] =
+                                                @player_two.pawn_seven end
+    unless @player_two.pawn_eight.x.nil? then @board[@player_two.pawn_eight.x][@player_two.pawn_eight.y] =
+                                                @player_two.pawn_eight end
+    unless @player_two.rook_one.x.nil? then @board[@player_two.rook_one.x][@player_two.rook_one.y] =
+                                              @player_two.rook_one end
+    unless @player_two.rook_two.x.nil? then @board[@player_two.rook_two.x][@player_two.rook_two.y] =
+                                              @player_two.rook_two end
+    unless @player_two.knight_one.x.nil? then @board[@player_two.knight_one.x][@player_two.knight_one.y] =
+                                                @player_two.knight_one end
+    unless @player_two.knight_two.x.nil? then @board[@player_two.knight_two.x][@player_two.knight_two.y] =
+                                                @player_two.knight_two end
+    unless @player_two.bishop_one.x.nil? then @board[@player_two.bishop_one.x][@player_two.bishop_one.y] =
+                                                @player_two.bishop_one end
+    unless @player_two.bishop_two.x.nil? then @board[@player_two.bishop_two.x][@player_two.bishop_two.y] =
+                                                @player_two.bishop_two end
+    @board[@player_two.queen.x][@player_two.queen.y] = @player_two.queen unless @player_two.queen.x.nil?
+    @board[@player_two.king.x][@player_two.king.y] = @player_two.king unless @player_two.king.x.nil?
   end
 end
 
@@ -876,8 +898,6 @@ class Chess
       @game.set_board
     end
   end
-
-
 end
 
 Chess.new
