@@ -24,6 +24,7 @@ class King < Piece
     @moved = false
     @check = false
     @checkmate = false
+    @king = true
   end
 
   def forward(board, x, y)
@@ -105,16 +106,16 @@ class King < Piece
     up_left(board, x, y)
   end
 
-  def choose_move(x, y, _board)
+  def choose_move(x, y, board)
     @moveset.each_with_index do |_i, index|
       next unless index.even? && @moveset[index] == x && @moveset[index + 1] == y
 
-      puts "You have moved #{piece} from #{[@x + 1, @y + 1]} to #{[x + 1, y + 1]}"
-      @x = x
-      @y = y
-      @moved = true
-      clear_moveset
-      return true
+          puts "You have moved #{piece} from #{[@x + 1, @y + 1]} to #{[x + 1, y + 1]}"
+          @x = x
+          @y = y
+          @moved = true
+          clear_moveset
+          return true
     end
   end
 
@@ -786,6 +787,23 @@ class Player
       select_move(board, piece.x, piece.y)
     end
     @board = board
+  end
+
+  def in_check?(board, x, y)
+    @pieces.each do |piece|
+      unless piece.x == nil
+        piece.possible_moves(board, piece.x, piece.y)
+        piece.moveset.each_with_index do |i, index|
+          if index.even? && @moveset[index] == self.king.x && @moveset[index + 1] == self.king.y 
+            move_remove_check?(board, x, y, piece)
+          end
+        end
+      end
+    end
+  end
+
+  def move_remove_check?(board, x, y, piece)
+
   end
 end
 
