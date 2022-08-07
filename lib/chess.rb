@@ -106,16 +106,16 @@ class King < Piece
     up_left(board, x, y)
   end
 
-  def choose_move(x, y, board)
+  def choose_move(x, y, _board)
     @moveset.each_with_index do |_i, index|
       next unless index.even? && @moveset[index] == x && @moveset[index + 1] == y
 
-          puts "You have moved #{piece} from #{[@x + 1, @y + 1]} to #{[x + 1, y + 1]}"
-          @x = x
-          @y = y
-          @moved = true
-          clear_moveset
-          return true
+      puts "You have moved #{piece} from #{[@x + 1, @y + 1]} to #{[x + 1, y + 1]}"
+      @x = x
+      @y = y
+      @moved = true
+      clear_moveset
+      return true
     end
   end
 
@@ -772,38 +772,50 @@ class Player
   end
 
   def move_piece(board, x, y, piece)
-    piece.possible_moves(board, piece.x, piece.y)
-    if piece.choose_move(x, y, board) == true
-      if !board[x][y].nil? && board[x][y].color != @color
-        puts "You have captured the opponent's #{board[x][y].piece}"
-        board[x][y].captured
-        board[x][y] = piece
-      else
-        board[x][y] = piece
-      end
-    else
+    if in_check? == true
       piece.moveset = []
-      puts "That is an invalid move for #{piece.piece}, please select again"
+      puts "#{[x.y]} is an invalid move for #{piece.piece} as you are in check, please select again"
       select_move(board, piece.x, piece.y)
+    else
+      piece.possible_moves(board, piece.x, piece.y)
+      if piece.choose_move(x, y, board) == true
+        if !board[x][y].nil? && board[x][y].color != @color
+          puts "You have captured the opponent's #{board[x][y].piece}"
+          board[x][y].captured
+          board[x][y] = piece
+        else
+          board[x][y] = piece
+        end
+      else
+        piece.moveset = []
+        puts "That is an invalid move for #{piece.piece}, please select again"
+        select_move(board, piece.x, piece.y)
+      end
+      @board = board
     end
-    @board = board
   end
 
-  def in_check?(board, x, y)
-    @pieces.each do |piece|
-      unless piece.x == nil
-        piece.possible_moves(board, piece.x, piece.y)
-        piece.moveset.each_with_index do |i, index|
-          if index.even? && @moveset[index] == self.king.x && @moveset[index + 1] == self.king.y 
-            move_remove_check?(board, x, y, piece)
-          end
+  def in_check?(board, x, y, piece)
+    @pieces.each do |char|
+      next if piece.x.nil?
+
+      char.possible_moves(board, char.x, char.y)
+      char.moveset.each_with_index do |_i, index|
+        if index.even? && @moveset[index] == king.x && @moveset[index + 1] == king.y && move_remove_check?(
+          board, x, y, piece, char
+        ) == false
+          return true
         end
       end
     end
   end
 
-  def move_remove_check?(board, x, y, piece)
-
+  def move_remove_check?(board, x, y, piece, char)
+    board[x][y] = piece
+    char.possible_moves(board, char.x, char.y)
+    char.moveset.each_with_index do |_i, index|
+      return false if index.even? && @moveset[index] == king.x && @moveset[index + 1] == king.y
+    end
   end
 end
 
