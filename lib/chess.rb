@@ -772,7 +772,7 @@ class Player
   end
 
   def move_piece(board, x, y, piece)
-    if in_check? == true
+    if in_check?(board, x, y, piece) == true
       piece.moveset = []
       puts "#{[x.y]} is an invalid move for #{piece.piece} as you are in check, please select again"
       select_move(board, piece.x, piece.y)
@@ -791,20 +791,35 @@ class Player
         puts "That is an invalid move for #{piece.piece}, please select again"
         select_move(board, piece.x, piece.y)
       end
-      @board = board
     end
+    @board = board
   end
 
   def in_check?(board, x, y, piece)
-    @pieces.each do |char|
-      next if piece.x.nil?
+    if piece.color == 'white'
+      @player_two.pieces.each do |char|
+        next if char.x.nil?
 
-      char.possible_moves(board, char.x, char.y)
-      char.moveset.each_with_index do |_i, index|
-        if index.even? && @moveset[index] == king.x && @moveset[index + 1] == king.y && move_remove_check?(
-          board, x, y, piece, char
-        ) == false
-          return true
+        char.possible_moves(board, char.x, char.y)
+        char.moveset.each_with_index do |_i, index|
+          if index.even? && char.moveset[index] == king.x && char.moveset[index + 1] == king.y && move_remove_check?(
+            board, x, y, piece, char
+          ) == false
+            return true
+          end
+        end
+      end
+    else
+      @player_one.pieces.each do |char|
+        next if char.x.nil?
+
+        char.possible_moves(board, char.x, char.y)
+        char.moveset.each_with_index do |_i, index|
+          if index.even? && char.moveset[index] == king.x && char.moveset[index + 1] == king.y && move_remove_check?(
+            board, x, y, piece, char
+          ) == false
+            return true
+          end
         end
       end
     end
@@ -814,8 +829,13 @@ class Player
     board[x][y] = piece
     char.possible_moves(board, char.x, char.y)
     char.moveset.each_with_index do |_i, index|
-      return false if index.even? && @moveset[index] == king.x && @moveset[index + 1] == king.y
+      return false if index.even? && char.moveset[index] == king.x && char.moveset[index + 1] == king.y
     end
+  end
+
+  def player_observer(player_one, player_two)
+    @player_one = player_one
+    @player_two = player_two
   end
 end
 
@@ -830,6 +850,11 @@ class Board
     @player_one = Player.new(player_one_name, player_one_color)
     @player_two = Player.new(player_two_name, player_two_color)
     set_board
+  end
+
+  def transmit_players
+    @player_one.player_observer(player_one = @player_one, player_two = @player_two)
+    @player_two.player_observer(player_one = @player_one, player_two = @player_two)
   end
 
   def set_board
@@ -922,8 +947,10 @@ class Chess
 
   def play
     loop do
+      @game.transmit_players
       @game.player_one.select_piece(@game.board)
       @game.set_board
+      @game.transmit_players
       @game.player_two.select_piece(@game.board)
       @game.set_board
     end
