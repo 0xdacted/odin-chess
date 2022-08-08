@@ -801,13 +801,9 @@ class Player
     temp_piece = temp_board[piece.x][piece.y]
 
     if piece.color == 'white'
-      if check_black_moveset(temp_board) == false && move_remove_check?(temp_board, x, y, temp_piece) == false
-        return true
-      end
-    else
-      if check_white_moveset(temp_board) == false && move_remove_check?(temp_board, x, y, temp_piece) == false
-        return true
-      end
+      true if check_black_moveset(temp_board) == false && move_remove_check?(temp_board, x, y, temp_piece) == false
+    elsif check_white_moveset(temp_board) == false && move_remove_check?(temp_board, x, y, temp_piece) == false
+      true
     end
   end
 
@@ -817,25 +813,21 @@ class Player
 
       char.possible_moves(temp_board, char.x, char.y)
       char.moveset.each_with_index do |_i, index|
-        if index.even? && char.moveset[index] == x && char.moveset[index + 1] == y
-          return false
-        end
+        return false if index.even? && char.moveset[index] == x && char.moveset[index + 1] == y
       end
     end
   end
 
-    def check_white_moveset(temp_board, x = king.x, y = king.y)
-      @player_one.pieces.each do |char|
-        next if char.x.nil?
+  def check_white_moveset(temp_board, x = king.x, y = king.y)
+    @player_one.pieces.each do |char|
+      next if char.x.nil?
 
-        char.possible_moves(temp_board, char.x, char.y)
-        char.moveset.each_with_index do |_i, index|
-          if index.even? && char.moveset[index] == x && char.moveset[index + 1] == y
-            return false
-          end
-        end
+      char.possible_moves(temp_board, char.x, char.y)
+      char.moveset.each_with_index do |_i, index|
+        return false if index.even? && char.moveset[index] == x && char.moveset[index + 1] == y
       end
     end
+  end
 
   def move_remove_check?(temp_board, x, y, temp_piece)
     temp_board[temp_piece.x][temp_piece.y] = nil
@@ -845,24 +837,14 @@ class Player
     if temp_piece.color == 'white'
 
       if temp_piece.instance_of?(King)
-        if  check_black_moveset(temp_board, x, y) == false
-          return false
-        end
-      else
-        if check_black_moveset(temp_board) == false
-          return false
-        end
+        false if check_black_moveset(temp_board, x, y) == false
+      elsif check_black_moveset(temp_board) == false
+        false
       end
-    else
-      if temp_piece.instance_of?(King)
-        if check_white_moveset(temp_board, x, y) == false
-          return false
-        end
-      else
-        if check_white_moveset(temp_board) == false
-          return false
-        end
-      end
+    elsif temp_piece.instance_of?(King)
+      false if check_white_moveset(temp_board, x, y) == false
+    elsif check_white_moveset(temp_board) == false
+      false
     end
   end
 
