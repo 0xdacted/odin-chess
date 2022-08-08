@@ -819,9 +819,6 @@ class Player
       char.moveset.each_with_index do |_i, index|
         if index.even? && char.moveset[index] == x && char.moveset[index + 1] == y
           return false
-        else
-          char.moveset.shift
-          char.moveset.shift
         end
       end
     end
@@ -835,9 +832,6 @@ class Player
         char.moveset.each_with_index do |_i, index|
           if index.even? && char.moveset[index] == x && char.moveset[index + 1] == y
             return false
-          else
-            char.moveset.shift
-            char.moveset.shift
           end
         end
       end
