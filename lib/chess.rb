@@ -864,6 +864,7 @@ class Board
     @board = board
     @player_one = Player.new(player_one_name, player_one_color)
     @player_two = Player.new(player_two_name, player_two_color)
+    @counter = -1
     set_board
   end
 
@@ -876,6 +877,7 @@ class Board
     clear_board
     set_player_one_pieces
     set_player_two_pieces
+    @counter += 1
   end
 
   def clear_board
@@ -947,27 +949,78 @@ class Board
     @board[@player_two.queen.x][@player_two.queen.y] = @player_two.queen unless @player_two.queen.x.nil?
     @board[@player_two.king.x][@player_two.king.y] = @player_two.king unless @player_two.king.x.nil?
   end
+
+  def turn
+    if @counter.odd?
+      'black'
+    else
+      'white'
+    end
+  end
 end
+
+require 'yaml'
 
 class Chess
   def initialize
+    color = load_game?
+    if color == 'white'
+      white_turn
+    elsif color == 'black'
+      black_turn
+    else
+      set_players
+    end
+  end
+
+  def set_players
     puts "Please input player one's name and press enter, this player will play as white"
     player_one = gets.chomp
     puts "Please input player two's name and press enter, this player will play as black"
     player_two = gets.chomp
     puts "Thanks for playing #{player_one} and #{player_two}, have fun!"
     @game = Board.new(player_one, 'white', player_two, 'black')
-    play
+    white_turn
   end
 
-  def play
-    loop do
-      @game.transmit_players
-      @game.player_one.select_piece(@game.board)
-      @game.set_board
-      @game.transmit_players
-      @game.player_two.select_piece(@game.board)
-      @game.set_board
+  def white_turn(game = @game)
+    game.transmit_players
+    game.player_one.select_piece(game.board)
+    game.set_board
+    exit if save_game? == true
+
+    black_turn
+  end
+
+  def black_turn(game = @game)
+    game.transmit_players
+    game.player_two.select_piece(game.board)
+    game.set_board
+    exit if save_game? == true
+
+    white_turn
+  end
+
+  def save_game?
+    puts 'If you would like to save, input y and press enter, else enter anything else'
+    answer = gets.chomp
+    if answer == 'y'
+      file = File.open('saved_game', 'w+')
+      Marshal.dump(@game, file)
+      puts 'Game Saved!'
+      true
+    end
+  end
+
+  def load_game?
+    puts 'If you would like to load your last game, input y and press enter, else enter anything else'
+    answer = gets.chomp
+    if answer == 'y'
+      file = File.open('saved_game')
+      loaded_game = Marshal.load(file)
+      puts 'Save Loaded!'
+      @game = loaded_game
+      @game.turn
     end
   end
 end
