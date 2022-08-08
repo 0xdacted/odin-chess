@@ -797,63 +797,75 @@ class Player
   end
 
   def in_check?(board, x, y, piece)
-    temp_board =  Marshal.load(Marshal.dump(board))
-    temp_piece =  Marshal.load(Marshal.dump(piece))
-    temp_player_one = Marshal.load(Marshal.dump(@player_one))
-    temp_player_two =  Marshal.load(Marshal.dump(@player_two))
+    temp_board = Marshal.load(Marshal.dump(board))
+    temp_piece = temp_board[piece.x][piece.y]
 
-    if temp_piece.color == 'white'
-      temp_player_two.pieces.each do |char|
-        next if char.x.nil?
-
- 
-        char.possible_moves(temp_board, char.x, char.y)
-        char.moveset.each_with_index do |_i, index|
-          if index.even? && char.moveset[index] == king.x && char.moveset[index + 1] == king.y && move_remove_check?(
-            temp_board, x, y, temp_piece, char
-          ) == false
-            return true
-          else
-            next
-          end
-        end
+    if piece.color == 'white'
+      if check_black_moveset(temp_board) == false && move_remove_check?(temp_board, x, y, temp_piece) == false
+        return true
       end
     else
-      temp_player_one.pieces.each do |char|
-        next if char.x.nil?
+      if check_white_moveset(temp_board) == false && move_remove_check?(temp_board, x, y, temp_piece) == false
+        return true
+      end
+    end
+  end
 
-       char.possible_moves(board, char.x, char.y)
-        char.moveset.each_with_index do |_i, index|
-          if index.even? && char.moveset[index] == king.x && char.moveset[index + 1] == king.y && move_remove_check?(
-            temp_board, x, y, temp_piece, char
-          ) == false
-            return true
-          end
+  def check_black_moveset(temp_board, x = king.x, y = king.y)
+    @player_two.pieces.each do |char|
+      next if char.x.nil?
+
+      char.possible_moves(temp_board, char.x, char.y)
+      char.moveset.each_with_index do |_i, index|
+        if index.even? && char.moveset[index] == x && char.moveset[index + 1] == y
+          return false
+        else
+          char.moveset.shift
+          char.moveset.shift
         end
       end
     end
   end
 
-  def move_remove_check?(temp_board, x, y, temp_piece, char)
+    def check_white_moveset(temp_board, x = king.x, y = king.y)
+      @player_one.pieces.each do |char|
+        next if char.x.nil?
 
+        char.possible_moves(temp_board, char.x, char.y)
+        char.moveset.each_with_index do |_i, index|
+          if index.even? && char.moveset[index] == x && char.moveset[index + 1] == y
+            return false
+          else
+            char.moveset.shift
+            char.moveset.shift
+          end
+        end
+      end
+    end
+
+  def move_remove_check?(temp_board, x, y, temp_piece)
+    temp_board[temp_piece.x][temp_piece.y] = nil
     temp_board[x][y] = temp_piece
     temp_piece.x = x
     temp_piece.y = y
-    char.possible_moves(temp_board, char.x, char.y)
-  
-  
-    if temp_piece.instance_of?(King)
-      char.moveset.each_with_index do |_i, index|
-        if index.even? && char.moveset[index] == temp_piece.x && char.moveset[index + 1] == temp_piece.y
+    if temp_piece.color == 'white'
+
+      if temp_piece.instance_of?(King)
+        if  check_black_moveset(temp_board, x, y) == false
           return false
-        else 
-         p char.moveset.shift
-         p char.moveset.shift
+        end
+      else
+        if check_black_moveset(temp_board) == false
+          return false
         end
       end
     else
-      char.moveset.each_with_index do |_i, index|
-        if index.even? && char.moveset[index] == king.x && char.moveset[index + 1] == king.y
+      if temp_piece.instance_of?(King)
+        if check_white_moveset(temp_board, x, y) == false
+          return false
+        end
+      else
+        if check_white_moveset(temp_board) == false
           return false
         end
       end
